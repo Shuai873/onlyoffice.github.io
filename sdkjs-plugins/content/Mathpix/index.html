@@ -1,0 +1,113 @@
+<!--
+ (c) Copyright Ascensio System SIA 2020
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ -->
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Mathpix</title>
+    <script src='vendor/jQuery-2.2.2-min/jquery-v2.2.2-min.js'></script>
+    
+    <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.js"></script>
+    <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins-ui.js"></script>
+    <link rel="stylesheet" href="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.css">
+    
+    <script type="text/javascript" src="scripts/Mathpix.js"></script>
+
+<style>
+    div{
+        display: inline-block;
+        vertical-align: top;
+    }
+    html{
+        height: 100%;
+    }
+    button{
+        width: 125px;
+    }
+
+    .display-none {
+        display: none;
+    }
+    .mrtop {
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body style="box-sizing:border-box; width: 100%; height: 100%; margin: 0; padding-left: 22px;">
+	<div id="main-div" style="height: 100%; width: 100%">
+        <!-- 配置界面 - 用于输入API密钥 -->
+        <div id="configState" class="display-none">
+            <div><span class="i18n">To use Mathpix OCR, you need to obtain API keys.</span> <span class="i18n">Please visit</span> <a class="i18n" target="_blank" href="https://console.mathpix.com/">Mathpix Console</a>. <span class="i18n">Create and copy the app_id and app_key to the fields below.</span></div>
+            <div class="mrtop label">
+                <span class="i18n">App ID</span>
+                <input id="appIdField" class="form-control" type="text" placeholder="App ID" style="width: 100%;"/>
+            </div>
+            <div class="mrtop label">
+                <span class="i18n">App Key</span>
+                <input id="appKeyField" class="form-control" type="text" placeholder="App Key" style="width: 100%;"/>
+            </div>
+            <button id="saveConfigBtn" class="btn-text-default i18n" style="margin-top: 16px; width: 100%;">Save</button>
+        </div>
+
+        <!-- 主界面 -->
+        <div id="mainContent">
+            <div style="height: 99px" class="noselect">
+                <label class="defaultlable" style="display: inline-block; margin-top: 15px; margin-bottom: 22px" id="label1">Mathpix OCR can recognize text and formulas in images (png, jpg)</label><br class="noselect">
+                <div class="noselect">
+                    <div style="margin-right: 0px; width: 175px; overflow: visible;">
+                        <button class="btn-text-default" id="load-file-button-id">Load File</button><br class="noselect">
+                        <label disabled  class="defaultlable" style="overflow-x: visible" id="file-name-label"></label>
+                        <input style="display: none" type="file" id="images-input" multiple accept='image/jpeg,image/png' />
+                    </div>
+                </div>
+                
+                <div class="noselect">
+                    <div style="margin-right: 22px">
+                        <label class="defaultlable" id="label2">Output Format</label>
+                        <select id="output-format-select" style="width: 125px">
+                            <option value="text">Text</option>
+                            <option value="latex">LaTeX</option>
+                            <option value="html">HTML</option>
+                            <option value="asciimath">AsciiMath</option>
+                            <option value="mathml">MathML</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="noselect">
+                    <button class="btn-text-default" id='recognize-button' disabled>Recognize</button><br class="noselect">
+                    <label id="status-label" class="defaultlable" disabled ></label>
+                </div>
+            </div>
+            <div id="scrollable-image-text-div" style="position:absolute; display: none; height: calc(100% - 99px); width: calc(100% - 5px); position: relative; overflow: hidden">
+                <div style="width: calc(50% - 20px); margin-right: 25px" id="image-container-div" class="noselect">
+    
+                </div>
+                <div id="text-container-div" style="width: calc(50% - 20px); -khtml-user-select: text; user-select: text; -moz-user-select: text; -webkit-user-select: text;" class="defaultlable" style="width: calc(50% - 24px)">
+    
+                </div>
+            </div>
+            <!-- 添加页脚 -->
+            <footer style="position: fixed; bottom: 0; width: 100%; text-align: left; padding: 10px;">
+                <a href="#" id="configLink" style="text-decoration: none; color: #333;">API Configuration</a>
+            </footer>
+        </div>
+    </div>
+    
+</body>
+</html>
+
+
