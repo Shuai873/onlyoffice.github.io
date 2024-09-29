@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arXiv Search</title>
+    
+    <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.js"></script>
+    <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins-ui.js"></script>
+    <link rel="stylesheet" href="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.css">
+    
+    <!-- 添加 Citation.js 库 -->
+    <script>
+        function loadScript(url, callback) {
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = url;
+            script.onload = callback;
+            document.head.appendChild(script);
+        }
+
+        loadScript('https://cdn.jsdelivr.net/npm/citation-js@0.4.0-7/build/citation.js', function() {
+            console.log('Citation.js loaded');
+            // 在全局范围内定义 Cite
+            window.Cite = require('citation-js');
+            
+            console.log('Cite object initialized:', window.Cite);
+            
+            // 然后加载 arXiv.js
+            loadScript('scripts/arXiv.js', function() {
+                console.log('arXiv.js loaded');
+                if (window.Asc && window.Asc.plugin) {
+                    window.Asc.plugin.init();
+                } else {
+                    console.error('ONLYOFFICE plugin environment not detected');
+                }
+            });
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* 基本页面布局 */
+        body {
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+            line-height: 1.5;
+            color: #222;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .flex-wrap {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* 搜索表单样式 */
+        .search-form {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .search-field {
+            width: 100%;
+            display: flex;
+            margin-bottom: 0.5rem;
+        }
+        .search-field select {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+        .search-field input[type="text"] {
+            flex-grow: 1;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+        .search-field button {
+            color: #fff;
+            background-color: #007bff;
+            border-color: #007bff;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+        .search-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .search-options label {
+            margin-right: 1rem;
+        }
+        
+        /* 主要内容区域样式 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        #results-container {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* 底部控制区域样式 */
+        .bottom-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        
+        #citation-format {
+            margin-right: 10px;
+        }
+        
+        #insertBibDiv {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* 搜索结果列表样式 */
+        dl {
+            margin-top: 0;
+        }
+        dt {
+            margin-top: 1em;
+            padding-top: 0.5em;
+            border-top: 1px solid #ccc;
+        }
+        dd {
+            margin-left: 0;
+            margin-bottom: 1em;
+        }
+        .list-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #005aa0;
+        }
+        .list-authors {
+            font-size: 0.9em;
+            color: #444;
+        }
+        .list-meta {
+            font-size: 0.8em;
+            color: #666;
+        }
+        .list-identifier a {
+            color: #007000;
+            text-decoration: none;
+        }
+        .list-date {
+            margin-left: 1em;
+        }
+        .list-subjects {
+            font-size: 0.8em;
+            margin-top: 0.3em;
+        }
+        .primary-subject {
+            color: #007000;
+        }
+        .mathjax {
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .list-download {
+            font-size: 0.9em;
+        }
+        .list-pdf-link a {
+            color: #007000;
+            text-decoration: none;
+        }
+        
+        /* 搜索容器样式 */
+        #search-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f5f5f5;
+        }
+        #search-options {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        #search-field {
+            width: 120px;
+            margin-right: 10px;
+        }
+        #search-input {
+            flex-grow: 1;
+            padding: 5px;
+            font-size: 16px;
+        }
+        #search-button {
+            background-color: #0068c3;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+        #search-button:hover {
+            background-color: #004e92;
+        }
+        /* 单选按钮组样式 */
+        .radio-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .radio-group label {
+            margin-right: 20px;
+        }
+        /* 排序选项样式 */
+        #sort-options {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        #sort-options label {
+            margin-right: 10px;
+        }
+        #sort-by, #sort-order {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form class="search-form" onsubmit="performSearch(); return false;">
+        <div class="flex-wrap">
+            <div class="search-field">
+                <input type="text" id="search-input" name="query" placeholder="Search or Article ID" aria-label="Search term or terms">
+                <select id="search-field" name="searchtype">
+                    <option value="all">All fields</option>
+                    <option value="title">Title</option>
+                    <option value="author">Author(s)</option>
+                    <option value="abstract">Abstract</option>
+                    <option value="comments">Comments</option>
+                    <option value="journal_ref">Journal reference</option>
+                    <option value="acm_class">ACM classification</option>
+                    <option value="msc_class">MSC classification</option>
+                    <option value="report_num">Report number</option>
+                    <option value="paper_id">arXiv identifier</option>
+                    <option value="doi">DOI</option>
+                    <option value="orcid">ORCID</option>
+                    <option value="author_id">arXiv author ID</option>
+                    <option value="help">Help pages</option>
+                    <option value="full_text">Full text</option>
+                </select>
+                <button type="submit" id="search-button">Search</button>
+            </div>
+        </div>
+        <div class="search-options">
+            <div>
+                <input type="radio" id="show-abstracts" name="abstracts" value="show" checked>
+                <label for="show-abstracts">Show abstracts</label>
+                <input type="radio" id="hide-abstracts" name="abstracts" value="hide">
+                <label for="hide-abstracts">Hide abstracts</label>
+            </div>
+            <div>
+                <label for="sort-by">Sort by:</label>
+                <select id="sort-by" name="sortBy">
+                    <option value="relevance">Relevance</option>
+                    <option value="lastUpdatedDate">Last Updated Date</option>
+                    <option value="submittedDate">Submitted Date</option>
+                </select>
+                <select id="sort-order" name="sortOrder">
+                    <option value="descending">Descending</option>
+                    <option value="ascending">Ascending</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    
+    <div class="main-content">
+        <div id="results-container"></div>
+        <div id="loading-indicator" style="display: none;">搜索中...</div>
+    </div>
+    
+    <div class="bottom-controls">
+        <select id="citation-format">
+            <option value="apa">APA</option>
+            <option value="mla">MLA</option>
+            <option value="chicago">Chicago</option>
+            <option value="harvard1">Harvard</option>
+            <option value="vancouver">Vancouver</option>
+            <option value="bibtex">BibTeX</option>
+            <option value="ris">RIS</option>
+        </select>
+        <div id="insertBibDiv" class="flex">
+            <button id="addEditCitationBtn" class="button control i18n btn-text-default">Add/Edit Citation</button>
+            <button id="addBibliographyBtn" class="button control i18n btn-text-default">Add/Edit Bibliography</button>
+            <button id="refreshBtn" class="button control btn-text-default i18n">Refresh</button>
+        </div>
+    </div>
+    
+    <div id="insertionPreview" style="display:none;"></div>
+    
+    <div id="error-message" style="color: red; display: none;"></div>
+</body>
+</html>

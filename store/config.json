@@ -31,5 +31,6 @@
 	{ "name": "termef", "discussion": "295" },
 	{ "name": "pixabay", "discussion": "325" },
 	{ "name": "insertQR", "discussion": "" },
-	{ "name": "Mathpix", "discussion": "" }
+	{ "name": "Mathpix", "discussion": "" },
+	{ "name": "arXiv", "discussion": "" }
 ]

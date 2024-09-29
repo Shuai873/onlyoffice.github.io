@@ -1,0 +1,53 @@
+{
+	"name": "arXiv",
+	"nameLocale": {
+		"ru": "arXiv",
+		"fr": "arXiv",
+		"es": "arXiv",
+		"pt-BR": "arXiv",
+		"de": "arXiv"
+	},
+	"guid": "asc.{ }",
+	"version": "0.0.1",
+
+
+	"variations" : [
+		{
+			"description": "Create bibliographies in the required style using arXiv service.",
+			"descriptionLocale": {
+					"ru": "Оформляйте библиографические списки в нужном стиле с помощью arXiv.",
+					"fr": "Créez des bibliographies dans le style nécessaire avec arXiv.",
+					"es": "Cree bibliografías en el estilo requerido utilizando el servicio arXiv.",
+					"pt-BR": "Crie bibliografias no estilo desejado usando o serviço arXiv.",
+					"de": "Erstellen Sie Literaturverzeichnisse im gewünschten Stil mittels arXiv."
+				},
+			"url": "index.html",
+			"icons": [ "resources/img/icon.png", "resources/img/icon@2x.png" ],
+			
+			"isViewer": false,
+			"EditorsSupport": [ "word" ],
+			"initDataType": "text",
+			"initData": "",
+			"isVisual": true,
+			"isModal": false,
+			"isInsideMode": true,
+			"isUpdateOleOnResize": false,
+			"initOnSelectionChanged": false,
+			"store": {
+				"background": {
+					"light" : "#2D3037",
+					"dark" : "#2D3037"
+				},
+				"screenshots" : [
+					"resources/store/screenshots/screen_1.png",
+					"resources/store/screenshots/screen_2.png"
+				],
+				"icons" : {
+					"light" : "resources/store/icons",
+					"dark"  : "resources/store/icons"
+				},
+				"categories": ["specAbilities"]
+			}
+		}
+	]
+}
