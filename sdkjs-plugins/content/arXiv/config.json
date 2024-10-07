@@ -33,6 +33,7 @@
 			"isInsideMode": true,
 			"isUpdateOleOnResize": false,
 			"initOnSelectionChanged": false,
+			"events" : ["onToolbarMenuClick"],
 			"store": {
 				"background": {
 					"light" : "#2D3037",

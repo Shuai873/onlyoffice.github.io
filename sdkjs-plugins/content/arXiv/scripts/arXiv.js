@@ -13,6 +13,22 @@ console.log('window.Asc exists:', !!window.Asc);
     window.Asc.plugin.init = function() {
         console.log('Plugin init called');
         
+        // 将arXiv选项卡及其项目添加至工具栏，
+        this.executeMethod("AddToolbarMenuItem", [getToolbarItems()]);
+
+        // 添加工具栏按钮的点击事件处理
+        this.attachToolbarMenuClickEvent("addEditCitation", function() {
+            addEditCitation();
+        });
+
+        this.attachToolbarMenuClickEvent("addEditBibliography", function() {
+            addEditBibliography();
+        });
+
+        this.attachToolbarMenuClickEvent("refresh", function() {
+            refreshCitations();
+        });
+
         try {
             if (window.Cite) {
                 console.log('Citation.js is available');
@@ -28,6 +44,51 @@ console.log('window.Asc exists:', !!window.Asc);
         }
     };
 
+    function getToolbarItems() {
+        console.log()
+        let items = {
+          guid: window.Asc.plugin.info.guid,
+          tabs: [{
+            id: "tab_arxiv",
+            text: "arXiv",
+            items: [
+                {
+                    id: "addEditCitation",
+                    type: "button",
+                    text: "Add/Edit Citation",
+                    hint: "Add or edit a citation",
+                    icons: "resources/buttons/add-edit-citation.png",
+                    lockInViewMode: true,
+                    enableToggle: false,
+                    separator: false
+                },
+                {
+                    id: "addEditBibliography",
+                    type: "button",
+                    text: "Add/Edit Bibliography",
+                    hint: "Add or edit bibliography",
+                    icons: "resources/buttons/add-edit-bibliography.png",
+                    lockInViewMode: true,
+                    enableToggle: false,
+                    separator: false
+                },
+                {
+                    id: "refresh",
+                    type: "button",
+                    text: "Refresh",
+                    hint: "Refresh citations and bibliography",
+                    icons: "resources/buttons/refresh.png",
+                    lockInViewMode: true,
+                    enableToggle: false,
+                    separator: false
+                }
+            ]
+          }]
+        };
+  
+        return items;
+    }
+    
     function initializePlugin() {
         console.log('Initializing plugin');
         try {
@@ -35,7 +96,7 @@ console.log('window.Asc exists:', !!window.Asc);
             $('#search-button').off('click');
             $('#search-input').off('keypress');
             $('#addEditCitationBtn').off('click');
-            $('#addBibliographyBtn').off('click');
+            $('#addEditBibliographyBtn').off('click');
             $('#refreshBtn').off('click');
 
             // 添加新的事件监听器
@@ -46,7 +107,7 @@ console.log('window.Asc exists:', !!window.Asc);
                 }
             });
             $('#addEditCitationBtn').on('click', addEditCitation);
-            $('#addBibliographyBtn').on('click', addBibliography);
+            $('#addEditBibliographyBtn').on('click', addEditBibliography);
             $('#refreshBtn').on('click', refreshCitations);
 
             // 添加摘要显示/隐藏功能
@@ -335,8 +396,8 @@ console.log('window.Asc exists:', !!window.Asc);
         insertCitation(selectedPapers);
     }
 
-    function addBibliography() {
-        console.log('Adding bibliography');
+    function addEditBibliography() {
+        console.log('Adding/Editing  bibliography');
         const selectedPapers = getSelectedPapers();
         if (selectedPapers.length === 0) {
             alert('请先选择要添加到参考文献表的论文');
@@ -448,9 +509,12 @@ console.log('window.Asc exists:', !!window.Asc);
         return {
             id: paper.id,
             title: paper.title,
-            author: paper.authors.map(name => {
-                const parts = name.split(' ');
-                return { given: parts.slice(0, -1).join(' '), family: parts.slice(-1)[0] };
+            author: paper.authors.map(author => {
+                const nameParts = author.name.split(' ');
+                return { 
+                    given: nameParts.slice(0, -1).join(' '), 
+                    family: nameParts.slice(-1)[0] 
+                };
             }),
             type: 'article-journal',
             issued: { 'date-parts': [[new Date(paper.published).getFullYear()]] },
@@ -471,8 +535,8 @@ console.log('window.Asc exists:', !!window.Asc);
                 addEditCitation();
                 break;
             case 1:
-            case 'addBibliographyBtn':
-                addBibliography();
+            case 'addEditBibliographyBtn':
+                addEditBibliography();
                 break;
             case 2:
             case 'refreshBtn':
@@ -483,6 +547,8 @@ console.log('window.Asc exists:', !!window.Asc);
         setTimeout(() => {
             isProcessingButton = false;
         }, 100);
+
+        window.Asc.plugin.executeCommand("close", "");
     };
 
     function loadPreviousPage() {

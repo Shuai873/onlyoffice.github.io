@@ -25,40 +25,48 @@
     // 在文件顶部添加一个全局变量来存储完整的识别结果
     var fullRecognitionResults = [];
 
+    // 定义状态切换函数
+    function switchClass(el, className, add) {
+        if (add) {
+            el.classList.add(className);
+        } else {
+            el.classList.remove(className);
+        }
+    }
+
+    function configState(hide) {
+        switchClass(document.getElementById('configState'), 'display-none', hide);
+    }
+
+    function mainState(hide) {
+        switchClass(document.getElementById('mainContent'), 'display-none', hide);
+    }
+
+    function switchAuthState(state) {
+        configState(true);
+        mainState(true);
+        switch (state) {
+            case 'config':
+                configState(false);
+                break;
+            case 'main':
+                mainState(false);
+                break;
+        }
+    }
+
     // 插件初始化函数
     window.Asc.plugin.init = function(){
-        // 定义状态切换函数
-        function switchClass(el, className, add) {
-            if (add) {
-                el.classList.add(className);
-            } else {
-                el.classList.remove(className);
-            }
-        }
 
-        function configState(hide) {
-            switchClass(document.getElementById('configState'), 'display-none', hide);
-        }
+        // 将Mathpix选项卡及其项目添加至工具栏，
+        this.executeMethod("AddToolbarMenuItem", [getToolbarItems()]);
 
-        function mainState(hide) {
-            switchClass(document.getElementById('mainContent'), 'display-none', hide);
-        }
+        // 添加工具栏按钮的点击事件处理
+        this.attachToolbarMenuClickEvent("openMainInterface", function() {
+            switchAuthState('main');
+        });
 
-        function switchAuthState(state) {
-            configState(true);
-            mainState(true);
-            switch (state) {
-                case 'config':
-                    configState(false);
-                    break;
-                case 'main':
-                    mainState(false);
-                    break;
-            }
-        }
-
-        // 添加配置链接点击事件
-        $('#configLink').click(function() {
+        this.attachToolbarMenuClickEvent("openConfigInterface", function() {
             switchAuthState('config');
             
             // 填充现有的配置
@@ -424,6 +432,40 @@
         });
     };
 
+    function getToolbarItems() {
+        let items = {
+            guid: window.Asc.plugin.info.guid,
+            tabs: [{
+                id: "tab_mathpix",
+                text: "Mathpix",
+                items: [
+                    {
+                        id: "openMainInterface",
+                        type: "button",
+                        text: "OCR Image",
+                        hint: "Perform OCR on images",
+                        icons: "resources/buttons/images.png",
+                        lockInViewMode: true,
+                        enableToggle: false,
+                        separator: false
+                    },
+                    {
+                        id: "openConfigInterface",
+                        type: "button",
+                        text: "API Settings",
+                        hint: "Configure API settings",
+                        icons: "resources/buttons/settings.png",
+                        lockInViewMode: true,
+                        enableToggle: false,
+                        separator: false
+                    }
+                ]
+            }]
+        };
+  
+        return items;
+    }
+    
     // 主题改变事件处理
     window.Asc.plugin.onThemeChanged = function(theme)
     {
