@@ -6,6 +6,9 @@ console.log('window.Asc exists:', !!window.Asc);
 
     let papers = [];
     let Cite;
+    let currentStart = 0;
+    let resultsPerPage = 10;
+    let totalResults = 0;
 
     window.Asc.plugin.init = function() {
         console.log('Plugin init called');
@@ -58,7 +61,13 @@ console.log('window.Asc exists:', !!window.Asc);
             $('#error-message').hide();
             console.log('Plugin initialized successfully');
 
-            $('.search-form').on('submit', performSearch);
+            $('.search-form').off('submit').on('submit', handleSearchSubmit);
+
+            $('#results-per-page').on('change', function() {
+                resultsPerPage = parseInt($(this).val());
+                currentStart = 0;
+                performSearch();
+            });
         } catch (error) {
             console.error('Error in initializePlugin:', error);
             $('#error-message').text('插件初始化失败，请刷新页面重试。').show();
@@ -71,6 +80,9 @@ console.log('window.Asc exists:', !!window.Asc);
         $('#loading-indicator').show();
         $('#results-container').empty();
         $('#error-message').hide();
+
+        // 如果是新搜索,重置起始位置
+        if (event) currentStart = 0;
 
         var searchField = $('#search-field').val();
         var query = $('#search-input').val().trim();
@@ -147,8 +159,8 @@ console.log('window.Asc exists:', !!window.Asc);
             apiUrl += '&sortOrder=' + sortOrder;
         }
 
-        // 输出结果数量为50 
-        apiUrl += '&start=0&max_results=50';
+        // 修改API URL,添加分页参数
+        apiUrl += '&start=' + currentStart + '&max_results=' + resultsPerPage;
 
         console.log('API URL:', apiUrl);
 
@@ -166,6 +178,7 @@ console.log('window.Asc exists:', !!window.Asc);
             .catch(error => {
                 console.error('Search error:', error);
                 $('#error-message').text('搜索时发生错误：' + error.message).show();
+                $('#results-container').html('<p>搜索失败。请稍后再试。</p>');
             })
             .finally(() => {
                 $('#loading-indicator').hide();
@@ -173,68 +186,135 @@ console.log('window.Asc exists:', !!window.Asc);
     }
 
     function displayResults(data, showAbstracts) {
-        console.log('Displaying results...');
+        console.log('显示结果...');
         papers = [];
         var results = '<dl>';
         var entries = data.getElementsByTagName('entry');
-        console.log('Number of entries found:', entries.length);
+        console.log('找到的条目数量:', entries.length);
 
-        Array.from(entries).forEach((entry, index) => {
-            var title = entry.getElementsByTagName('title')[0].textContent;
-            var authors = Array.from(entry.getElementsByTagName('author')).map(author => 
-                author.getElementsByTagName('name')[0].textContent
-            );
-            var summary = entry.getElementsByTagName('summary')[0].textContent;
-            var link = Array.from(entry.getElementsByTagName('link')).find(link => 
-                link.getAttribute('title') === 'pdf'
-            )?.getAttribute('href');
-            var id = entry.getElementsByTagName('id')[0].textContent.split('/').pop();
-            var published = new Date(entry.getElementsByTagName('published')[0].textContent);
-            var updated = new Date(entry.getElementsByTagName('updated')[0].textContent);
-            var categories = Array.from(entry.getElementsByTagName('category')).map(cat => cat.getAttribute('term'));
+        // 获取总结果数
+        totalResults = parseInt(data.getElementsByTagName('opensearch:totalResults')[0].textContent);
 
-            console.log('Processing entry:', index, 'Title:', title);
+        if (entries.length === 0) {
+            results += '<dt>没有找到匹配的结果。</dt>';
+        } else {
+            Array.from(entries).forEach((entry, index) => {
+                var title = entry.getElementsByTagName('title')[0].textContent;
+                var authors = Array.from(entry.getElementsByTagName('author')).map(author => {
+                    var name = author.getElementsByTagName('name')[0].textContent;
+                    var affiliation = author.getElementsByTagName('arxiv:affiliation')[0]?.textContent || '';
+                    return { name, affiliation };
+                });
+                var summary = entry.getElementsByTagName('summary')[0].textContent;
+                var link = Array.from(entry.getElementsByTagName('link')).find(link => 
+                    link.getAttribute('title') === 'pdf'
+                )?.getAttribute('href');
+                var id = entry.getElementsByTagName('id')[0].textContent.split('/').pop();
+                var published = new Date(entry.getElementsByTagName('published')[0].textContent);
+                var updated = new Date(entry.getElementsByTagName('updated')[0].textContent);
+                var categories = Array.from(entry.getElementsByTagName('category')).map(cat => cat.getAttribute('term'));
+                var comments = entry.getElementsByTagName('arxiv:comment')[0]?.textContent || '';
+                var journalRef = entry.getElementsByTagName('arxiv:journal_ref')[0]?.textContent || '';
+                var doi = entry.getElementsByTagName('arxiv:doi')[0]?.textContent || '';
 
-            papers.push({ title, authors, id, summary, link, published, updated, categories });
+                console.log('Processing entry:', index, 'Title:', title);
 
-            results += '<dt>';
-            results += '<input type="checkbox" id="' + id + '" name="paper">';
-            results += '<label for="' + id + '">';
-            results += '<div class="list-title">' + title + '</div>';
-            results += '<div class="list-authors">' + authors.join(', ') + '</div>';
-            results += '<div class="list-meta">';
-            results += '<span class="list-identifier"><a href="https://arxiv.org/abs/' + id + '" target="_blank">arXiv:' + id + '</a></span>';
-            results += '<span class="list-date">[Submitted on ' + published.toDateString() + ']</span>';
-            if (updated > published) {
-                results += '<span class="list-date">(updated ' + updated.toDateString() + ')</span>';
-            }
-            results += '</div>';
-            if (categories.length > 0) {
-                results += '<div class="list-subjects"><span class="primary-subject">' + categories[0] + '</span>';
-                if (categories.length > 1) {
-                    results += '<span class="other-subjects">; ' + categories.slice(1).join('; ') + '</span>';
+                var primaryCategory = entry.getElementsByTagName('arxiv:primary_category')[0]?.getAttribute('term') || '';
+                var mscClass = entry.getElementsByTagName('arxiv:msc-class')[0]?.textContent || '';
+                var acmClass = entry.getElementsByTagName('arxiv:acm-class')[0]?.textContent || '';
+                var reportNo = entry.getElementsByTagName('arxiv:report-no')[0]?.textContent || '';
+                var license = entry.getElementsByTagName('arxiv:license')[0]?.textContent || '';
+                var version = entry.getElementsByTagName('arxiv:version')[0]?.textContent || '1';
+                var psLink = Array.from(entry.getElementsByTagName('link')).find(link => 
+                    link.getAttribute('title') === 'ps'
+                )?.getAttribute('href');
+
+                papers.push({ title, authors, id, summary, link, published, updated, categories, comments, journalRef, doi });
+
+                results += '<dt>';
+                results += '<div class="paper-header">';
+                results += '<input type="checkbox" id="' + id + '" name="paper">';
+                results += '<label for="' + id + '">';
+                results += '<span class="list-identifier">';
+                results += '<a href="https://arxiv.org/abs/' + id + '" target="_blank">arXiv:' + id + '</a>';
+                results += ' [<a href="' + link + '" target="_blank">pdf</a>, <a href="https://arxiv.org/format/' + id + '" target="_blank">other</a>]';
+                results += '</span>';
+                results += ' <span class="list-category">' + primaryCategory + '</span>';
+                results += '</label>';
+                results += '</div>';
+                results += '<div class="paper-details">';
+                results += '<div class="list-title">' + title + '</div>';
+                results += '<div class="list-authors">' + authors.map(author => 
+                    '<a href="https://arxiv.org/search/?searchtype=author&query=' + 
+                    encodeURIComponent(author.name) + 
+                    '" target="_blank">' + 
+                    author.name + 
+                    '</a>' + 
+                    (author.affiliation ? ' (' + author.affiliation + ')' : '')
+                ).join(', ') + '</div>';
+                results += '</div>';
+                results += '</dt>';
+                results += '<dd>';
+                if (showAbstracts) {
+                    results += '<p class="mathjax">' + summary + '</p>';
+                }
+                results += '<div class="list-meta">';
+                results += '<span class="list-date">Submitted ' + published.toDateString() + '</span>';
+                if (updated > published) {
+                    results += ' (updated ' + updated.toDateString() + ')';
                 }
                 results += '</div>';
-            }
-            results += '</label>';
-            results += '</dt>';
-            results += '<dd>';
-            if (showAbstracts) {
-                results += '<p class="mathjax">' + summary + '</p>';
-            }
-            results += '<p class="list-download">';
-            if (link) {
-                results += '<span class="list-pdf-link"><a href="' + link + '" target="_blank">PDF</a></span>';
-            }
-            results += '<span class="list-other-formats"><a href="https://arxiv.org/abs/' + id + '" target="_blank">Other formats</a></span>';
-            results += '</p>';
-            results += '</dd>';
-        });
+                
+                // 添加所有可能的元数据
+                const metadataFields = [
+                    { label: 'Comments', value: comments },
+                    { label: 'Journal ref', value: journalRef },
+                    { label: 'DOI', value: doi, isLink: true },
+                    { label: 'Primary Category', value: primaryCategory },
+                    { label: 'All Categories', value: categories.join(', ') },
+                    { label: 'MSC Class', value: mscClass },
+                    { label: 'ACM Class', value: acmClass },
+                    { label: 'Report Number', value: reportNo },
+                    { label: 'License', value: license },
+                    { label: 'Version', value: version }
+                ];
+
+                metadataFields.forEach(field => {
+                    if (field.value) {
+                        results += '<div class="list-meta"><span>' + field.label + ': ';
+                        if (field.isLink) {
+                            results += '<a href="https://doi.org/' + field.value + '" target="_blank">' + field.value + '</a>';
+                        } else {
+                            results += field.value;
+                        }
+                        results += '</span></div>';
+                    }
+                });
+
+                if (psLink) {
+                    results += '<div class="list-meta"><span><a href="' + psLink + '" target="_blank">PostScript</a></span></div>';
+                }
+                
+                results += '</dd>';
+            });
+        }
 
         results += '</dl>';
 
+        // 添加分页控件
+        results += '<div id="pagination">';
+        results += '<button id="prev-page" ' + (currentStart === 0 ? 'disabled' : '') + '>上一页</button>';
+        results += '<span>第 ' + (Math.floor(currentStart / resultsPerPage) + 1) + ' 页,共 ' + Math.ceil(totalResults / resultsPerPage) + ' 页</span>';
+        results += '<button id="next-page" ' + (currentStart + resultsPerPage >= totalResults ? 'disabled' : '') + '>下一页</button>';
+        results += '</div>';
+
         console.log('Results HTML:', results);
         $('#results-container').html(results);
+
+        // 添加分页按钮事件监听器
+        $('#prev-page').on('click', loadPreviousPage);
+        $('#next-page').on('click', loadNextPage);
+
         console.log('Results displayed');
     }
 
@@ -404,4 +484,25 @@ console.log('window.Asc exists:', !!window.Asc);
             isProcessingButton = false;
         }, 100);
     };
+
+    function loadPreviousPage() {
+        if (currentStart >= resultsPerPage) {
+            currentStart -= resultsPerPage;
+            performSearch();
+        }
+    }
+
+    function loadNextPage() {
+        if (currentStart + resultsPerPage < totalResults) {
+            currentStart += resultsPerPage;
+            performSearch();
+        }
+    }
+
+    // 添加一个新函数来处理搜索表单的提交
+    function handleSearchSubmit(event) {
+        event.preventDefault();
+        currentStart = 0; // 重置到第一页
+        performSearch();
+    }
 })(window, undefined);

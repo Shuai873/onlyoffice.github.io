@@ -66,26 +66,24 @@
             display: flex;
             margin-bottom: 0.5rem;
         }
+        .search-field select, .search-field input[type="text"], .search-field button {
+            font-size: 1rem;
+            line-height: 1.5;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.25rem;
+        }
         .search-field select {
             width: auto;
             margin-right: 0.5rem;
         }
         .search-field input[type="text"] {
             flex-grow: 1;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
             border: 1px solid #ced4da;
-            border-radius: 0.25rem;
         }
         .search-field button {
             color: #fff;
             background-color: #007bff;
             border-color: #007bff;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            border-radius: 0.25rem;
             cursor: pointer;
         }
         .search-options {
@@ -148,25 +146,23 @@
             font-size: 1.1em;
             font-weight: bold;
             color: #005aa0;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
         .list-authors {
             font-size: 0.9em;
             color: #444;
+            margin-bottom: 3px;
+        }
+        .list-meta, .list-subjects {
+            font-size: 0.8em;
+            margin-bottom: 3px;
         }
         .list-meta {
-            font-size: 0.8em;
             color: #666;
         }
-        .list-identifier a {
-            color: #007000;
-            text-decoration: none;
-        }
         .list-date {
-            margin-left: 1em;
-        }
-        .list-subjects {
-            font-size: 0.8em;
-            margin-top: 0.3em;
+            margin-left: 0;
         }
         .primary-subject {
             color: #007000;
@@ -175,12 +171,15 @@
             margin-top: 0.5em;
             margin-bottom: 0.5em;
         }
-        .list-download {
-            font-size: 0.9em;
-        }
-        .list-pdf-link a {
+        
+        /* 链接样式 */
+        .list-identifier a, .list-pdf-link a {
             color: #007000;
             text-decoration: none;
+            font-weight: bold;
+        }
+        .list-identifier a:hover {
+            text-decoration: underline;
         }
         
         /* 搜索容器样式 */
@@ -195,9 +194,11 @@
             align-items: center;
             margin-bottom: 10px;
         }
+        #search-field, #search-input {
+            margin-right: 10px;
+        }
         #search-field {
             width: 120px;
-            margin-right: 10px;
         }
         #search-input {
             flex-grow: 1;
@@ -214,26 +215,39 @@
         #search-button:hover {
             background-color: #004e92;
         }
-        /* 单选按钮组样式 */
-        .radio-group {
+        
+        /* 单选按钮组和排序选项样式 */
+        .radio-group, #sort-options {
             display: flex;
             align-items: center;
             margin-top: 10px;
         }
-        .radio-group label {
+        .radio-group label, #sort-options label {
             margin-right: 20px;
-        }
-        /* 排序选项样式 */
-        #sort-options {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-        #sort-options label {
-            margin-right: 10px;
         }
         #sort-by, #sort-order {
             margin-right: 10px;
+        }
+        
+        /* 论文条目样式 */
+        .paper-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .paper-header input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .list-identifier {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .list-category {
+            color: #666;
+            font-weight: bold;
+        }
+        .paper-details {
+            margin-left: 0;
         }
     </style>
 </head>
@@ -279,6 +293,14 @@
                 <select id="sort-order" name="sortOrder">
                     <option value="descending">Descending</option>
                     <option value="ascending">Ascending</option>
+                </select>
+            </div>
+            <div>
+                <label for="results-per-page">每页显示:</label>
+                <select id="results-per-page">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
                 </select>
             </div>
         </div>

@@ -65,7 +65,7 @@
         <!-- 主界面 -->
         <div id="mainContent">
             <div style="height: 99px" class="noselect">
-                <label class="defaultlable" style="display: inline-block; margin-top: 15px; margin-bottom: 22px" id="label1">Mathpix OCR can recognize text and formulas in images (png, jpg)</label><br class="noselect">
+                <label class="defaultlable" style="display: inline-block; margin-top: 15px; margin-bottom: 22px" id="label1">Mathpix OCR specializes in recognizing mathematical formulas, along with text, tables, and chemical structures in images (png, jpg)</label><br class="noselect">
                 <div class="noselect">
                     <div style="margin-right: 0px; width: 175px; overflow: visible;">
                         <button class="btn-text-default" id="load-file-button-id">Load File</button><br class="noselect">
@@ -73,23 +73,25 @@
                         <input style="display: none" type="file" id="images-input" multiple accept='image/jpeg,image/png' />
                     </div>
                 </div>
+
+                <div class="noselect">
+                    <button class="btn-text-default" id='recognize-button' disabled>Recognize</button><br class="noselect">
+                    <label id="status-label" class="defaultlable" disabled ></label>
+                </div>
                 
                 <div class="noselect">
                     <div style="margin-right: 22px">
                         <label class="defaultlable" id="label2">Output Format</label>
                         <select id="output-format-select" style="width: 125px">
-                            <option value="text">Text</option>
                             <option value="latex">LaTeX</option>
+                            <option value="text">Text</option>
                             <option value="html">HTML</option>
                             <option value="asciimath">AsciiMath</option>
                             <option value="mathml">MathML</option>
+                            <option value="chemical">Chemical Structure</option>
+                            <option value="table">Table</option>
                         </select>
                     </div>
-                </div>
-                
-                <div class="noselect">
-                    <button class="btn-text-default" id='recognize-button' disabled>Recognize</button><br class="noselect">
-                    <label id="status-label" class="defaultlable" disabled ></label>
                 </div>
             </div>
             <div id="scrollable-image-text-div" style="position:absolute; display: none; height: calc(100% - 99px); width: calc(100% - 5px); position: relative; overflow: hidden">

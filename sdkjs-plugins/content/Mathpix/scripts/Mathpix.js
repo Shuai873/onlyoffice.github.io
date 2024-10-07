@@ -22,6 +22,9 @@
     // 存储解析后的OCR数据
     var arrParsedData = [];
 
+    // 在文件顶部添加一个全局变量来存储完整的识别结果
+    var fullRecognitionResults = [];
+
     // 插件初始化函数
     window.Asc.plugin.init = function(){
         // 定义状态切换函数
@@ -102,6 +105,9 @@
             Ps.update();
         }
         
+        // 设置容器的固定高度
+        $('#scrollable-image-text-div').css('height', '500px');
+        
         // 初始化自定义滚动条
         var container = document.getElementById('scrollable-image-text-div');        
 		Ps = new PerfectScrollbar("#" + container.id, {});
@@ -138,6 +144,8 @@
 						while (oTextContainer.firstChild) {
 							oTextContainer.removeChild(oTextContainer.firstChild);
 						}
+						arrParsedData.length = 0;
+						fullRecognitionResults.length = 0; // 清空保存的识别结果
 						
 						// 加载选中的图片
 						for (var i = 0; i < files.length; i++) 
@@ -194,6 +202,7 @@
                     oTextContainer.removeChild(oTextContainer.firstChild);
                 }
                 arrParsedData.length = 0;
+                fullRecognitionResults.length = 0; // 清空保存的识别结果
                 
                 // 使用FileReader加载图片
                 var oFileReader = new FileReader();
@@ -262,7 +271,7 @@
                             formData.append('options_json', JSON.stringify({
                                 math_inline_delimiters: ["$", "$"],
                                 rm_spaces: true,
-                                formats: ["text", "data", "html"],
+                                formats: ["text", "data", "html", "latex"],
                                 data_options: {
                                     include_asciimath: true,
                                     include_latex: true,
@@ -270,7 +279,11 @@
                                     include_table_html: true,
                                     include_tsv: true,
                                     include_mathml: true
-                                }
+                                },
+                                include_detected_alphabets: true,
+                                include_line_data: true,
+                                include_smiles: true, 
+                                auto_rotate_confidence_threshold: 0.99
                             }));
 
                             fetch('https://api.mathpix.com/v3/text', {
@@ -304,6 +317,7 @@
                     $('#status-label').text('');
                     document.getElementById('recognize-button').removeAttribute('disabled');
                     document.getElementById('load-file-button-id').removeAttribute('disabled');
+                    updateOutput();
                     return;
                 }
 
@@ -311,16 +325,14 @@
 
                 mathpixOCR(arrImagesCopy[index])
                     .then(result => {
-                        let htmlContent = generateHTMLByData(result);
-                        document.getElementById('text-container-div').appendChild($(htmlContent)[0]);
-                        arrParsedData.push(result);
+                        fullRecognitionResults.push(result);
                         updateScroll();
                         processImages(index + 1);
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         let errorHtml = "<div><p>Error: " + error.message + "</p></div>";
-                        document.getElementById('text-container-div').appendChild($(errorHtml)[0]);
+                        fullRecognitionResults.push({error: error.message});
                         updateScroll();
                         processImages(index + 1);
                     });
@@ -370,6 +382,20 @@
                         sResult += "<p>No MathML content found.</p>";
                     }
                     break;
+                case 'chemical':
+                    if (oData.data && oData.data.smiles) {
+                        sResult += "<p>Chemical Structure (SMILES): " + oData.data.smiles + "</p>";
+                    } else {
+                        sResult += "<p>No chemical structure detected.</p>";
+                    }
+                    break;
+                case 'table':
+                    if (oData.data && oData.data.table_html) {
+                        sResult += oData.data.table_html;
+                    } else {
+                        sResult += "<p>No table detected.</p>";
+                    }
+                    break;
                 default:
                     sResult += "<p>Unsupported output format.</p>";
             }
@@ -377,6 +403,25 @@
             sResult += "</div>";
             return sResult;
         }
+
+
+        function updateOutput() {
+            var oTextContainer = document.getElementById('text-container-div');
+            while (oTextContainer.firstChild) {
+                oTextContainer.removeChild(oTextContainer.firstChild);
+            }
+            
+            for (let result of fullRecognitionResults) {
+                let htmlContent = generateHTMLByData(result);
+                oTextContainer.appendChild($(htmlContent)[0]);
+            }
+            updateScroll();
+        }
+
+  
+        $('#output-format-select').change(function() {
+            updateOutput();
+        });
     };
 
     // 主题改变事件处理
@@ -418,7 +463,7 @@
 		// 翻译各个UI元素
 		var elem = document.getElementById("label1");
 		if (elem){
-			elem.innerHTML = window.Asc.plugin.tr("Mathpix OCR can recognize text and formulas in images (png, jpg)");
+			elem.innerHTML = window.Asc.plugin.tr("Mathpix OCR specializes in recognizing mathematical formulas, along with text, tables, and chemical structures in images (png, jpg)");
 		}
 		elem = document.getElementById("load-file-button-id");
 		if (elem){
