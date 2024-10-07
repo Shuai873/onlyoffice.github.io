@@ -57,8 +57,7 @@
 
     // 插件初始化函数
     window.Asc.plugin.init = function(){
-
-        // 将Mathpix选项卡及其项目添加至工具栏，
+        // 将 Mathpix 选项卡及其项目添加至工具栏
         this.executeMethod("AddToolbarMenuItem", [getToolbarItems()]);
 
         // 添加工具栏按钮的点击事件处理
@@ -68,12 +67,66 @@
 
         this.attachToolbarMenuClickEvent("openConfigInterface", function() {
             switchAuthState('config');
+            // 填充现有的配置
+            $('#appIdField').val(localStorage.getItem('mathpix_app_id') || '');
+            $('#appKeyField').val(localStorage.getItem('mathpix_app_key') || '');
+        });
+        
+        try {
+            console.log('初始化 Mathpix 插件');
+            initializePlugin();
+        } catch (error) {
+            console.error('Error initializing plugin:', error);
+            $('#error-message').text('插件初始化失败，请刷新页面重试。').show();
+        }
+    };
+
+    function getToolbarItems() {
+        let items = {
+            guid: window.Asc.plugin.info.guid,
+            tabs: [{
+                id: "tab_mathpix",
+                text: "Mathpix",
+                items: [
+                    {
+                        id: "openMainInterface",
+                        type: "button",
+                        text: "OCR Image",
+                        hint: "Perform OCR on images",
+                        icons: "resources/buttons/images.png",
+                        lockInViewMode: true,
+                        enableToggle: false,
+                        separator: false
+                    },
+                    {
+                        id: "openConfigInterface",
+                        type: "button",
+                        text: "API Settings",
+                        hint: "Configure API settings",
+                        icons: "resources/buttons/settings.png",
+                        lockInViewMode: true,
+                        enableToggle: false,
+                        separator: false
+                    }
+                ]
+            }]
+        };
+  
+        return items;
+    }
+    
+    function initializePlugin() {
+        console.log('初始化 Mathpix 插件');
+
+        // 添加配置链接点击事件
+        $('#configLink').click(function() {
+            switchAuthState('config');
             
             // 填充现有的配置
             $('#appIdField').val(localStorage.getItem('mathpix_app_id') || '');
             $('#appKeyField').val(localStorage.getItem('mathpix_app_key') || '');
         });
-
+        
         // 添加保存配置按钮事件
         $('#saveConfigBtn').click(function() {
             const appId = $('#appIdField').val().trim();
@@ -100,7 +153,7 @@
         }
 
         // 设置初始窗口大小
-        this.resizeWindow(592, 100, 592, 100, 592, 100);
+        window.Asc.plugin.resizeWindow(592, 100, 592, 100, 592, 100);
         var nStartFilesCount = 0, arrImages;
         
         // 窗口大小改变时更新滚动条
@@ -430,41 +483,11 @@
         $('#output-format-select').change(function() {
             updateOutput();
         });
-    };
 
-    function getToolbarItems() {
-        let items = {
-            guid: window.Asc.plugin.info.guid,
-            tabs: [{
-                id: "tab_mathpix",
-                text: "Mathpix",
-                items: [
-                    {
-                        id: "openMainInterface",
-                        type: "button",
-                        text: "OCR Image",
-                        hint: "Perform OCR on images",
-                        icons: "resources/buttons/images.png",
-                        lockInViewMode: true,
-                        enableToggle: false,
-                        separator: false
-                    },
-                    {
-                        id: "openConfigInterface",
-                        type: "button",
-                        text: "API Settings",
-                        hint: "Configure API settings",
-                        icons: "resources/buttons/settings.png",
-                        lockInViewMode: true,
-                        enableToggle: false,
-                        separator: false
-                    }
-                ]
-            }]
-        };
-  
-        return items;
+        console.log('Mathpix 插件初始化完成');
     }
+
+    
     
     // 主题改变事件处理
     window.Asc.plugin.onThemeChanged = function(theme)
