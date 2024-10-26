@@ -4,81 +4,51 @@
 		"ru": "Mathpix",
 		"fr": "Mathpix",
 		"es": "Mathpix",
-		"de": "Mathpix",
 		"pt-BR": "Mathpix",
-		"si": "Mathpix"
+		"de": "Mathpix",
+		"zh-CN": "Mathpix"
 	},
-	"guid": "asc.{440EBF13-9B19-1234-8621-05200E58140B}",
-	"version": "0.0.1",
+	"guid": "asc.{BFC5D5C6-89DE-1234-9565-ABD8D1E48711}",
+	"version": "1.0.0",
 
-	"variations": [
+	"variations" : [
 		{
-			"description": "Recognize text from pictures and screenshots and insert it into your documents.",
+			"description": "Perform OCR on mathematical formulas and text using Mathpix service.",
 			"descriptionLocale": {
-				"ru": "Распознавайте текст с фотографий и скриншотов и вставляйте его в документы.",
-				"fr": "Reconnaissez le texte des images et des captures d'écran et insérez-le dans vos documents.",
-				"es": "Reconozca el texto de imágenes y capturas de pantalla e insértelo en sus documentos.",
-				"de": "Erkennen Sie Text auf Bildern und Screenshots und fügen Sie ihn in Ihre Dokumente ein.",
-				"pt-BR": "Reconheça texto de imagens e capturas de tela e insira-o em seus documentos.",
-				"si": "ඡායාරූප සහ තිරසේයාවල අඩංගු පෙළ හඳුනාගෙන ඒවා ඔබගේ ලේඛන වලට ඇතුළු කරන්න."
-			},
+					"ru": "Выполняйте OCR математических формул и текста с помощью сервиса Mathpix.",
+					"fr": "Effectuez l'OCR des formules mathématiques et du texte à l'aide du service Mathpix.",
+					"es": "Realice OCR en fórmulas matemáticas y texto utilizando el servicio Mathpix.",
+					"pt-BR": "Realize OCR em fórmulas matemáticas e texto usando o serviço Mathpix.",
+					"de": "Führen Sie OCR für mathematische Formeln und Text mit dem Mathpix-Dienst durch.",
+					"zh-CN": "使用Mathpix服务对数学公式和文本进行OCR识别。"
+				},
 			"url": "index.html",
-
 			"icons": [ "resources/img/icon.png", "resources/img/icon@2x.png" ],
-			
-
 			"isViewer": false,
 			"EditorsSupport": [ "word" ],
+			"initDataType": "text",
+			"initData": "",
 			"isVisual": true,
-			"isModal": true,
-			"isInsideMode": false,
-			"initDataType": "none",
+			"isModal": false,
+			"isInsideMode": true,
 			"isUpdateOleOnResize": false,
-
-			"buttons": [
-				{
-					"text": "Insert All",
-					"primary": true,
-					"textLocale": {
-						"ru": "Вставить текст",
-						"fr": "Insérer le texte",
-						"es": "Insertar texto",
-						"de": "Text einfügen",
-						"si": "පෙළ ඇතුළු කරන්න"
-					}
-				},
-				{
-					"text": "Cancel",
-					"primary": false,
-					"textLocale": {
-						"ru": "Отмена",
-						"fr": "Annuler",
-						"es": "Cancelar",
-						"de": "Abbrechen",
-						"si": "අවලංගු"
-					}
-				}
-			],
-
+			"initOnSelectionChanged": false,
 			"size": [ 592, 100 ],
-			"events" : ["onToolbarMenuClick"],
 			"store": {
 				"background": {
-					"light" : "#444444",
-					"dark" : "#444444"
+					"light": "radial-gradient(circle, #B5BCC3 0%, #737D87 100%)",
+					"dark": "radial-gradient(circle, #B5BCC3 0%, #737D87 100%)"
 				},
-				"screenshots" : [
-					"resources/store/screenshots/screen_1.png",
-					"resources/store/screenshots/screen_2.png",
-					"resources/store/screenshots/screen_3.png"
+				"screenshots": [
+					"resources/store/screenshots/screenshot1.png",
+					"resources/store/screenshots/screenshot2.png"
 				],
-				"icons" : {
-					"light" : "resources/store/icons",
-					"dark"  : "resources/store/icons"
+				"icons": {
+					"light": "resources/store/icons",
+					"dark": "resources/store/icons"
 				},
 				"categories": ["specAbilities", "work"]
 			}
 		}
-		
 	]
 }
