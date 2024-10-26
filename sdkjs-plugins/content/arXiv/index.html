@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
     <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.js"></script>
     <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins-ui.js"></script>
     <link rel="stylesheet" href="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.css">
-    
+    <script type="text/javascript" src="scripts\code.js"></script>
     <!-- 添加 Citation.js 库 -->
     <script>
         function loadScript(url, callback) {
@@ -64,38 +64,57 @@
         .search-field {
             width: 100%;
             display: flex;
+            flex-direction: column;
             margin-bottom: 0.5rem;
         }
         .search-field select, .search-field input[type="text"], .search-field button {
+            width: 100%;
             font-size: 1rem;
             line-height: 1.5;
             padding: 0.375rem 0.75rem;
             border-radius: 0.25rem;
-        }
-        .search-field select {
-            width: auto;
-            margin-right: 0.5rem;
-        }
-        .search-field input[type="text"] {
-            flex-grow: 1;
-            border: 1px solid #ced4da;
-        }
-        .search-field button {
-            color: #fff;
-            background-color: #007bff;
-            border-color: #007bff;
-            cursor: pointer;
+            margin-bottom: 0.5rem;
         }
         .search-options {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
             margin-top: 0.5rem;
+        }
+        .search-options > div {
+            width: 100%;
+            margin-bottom: 0.5rem;
         }
         .search-options label {
             margin-right: 1rem;
         }
-        
+
+        /* 响应式布局 */
+        @media (min-width: 768px) {
+            .search-field {
+                flex-direction: row;
+            }
+            .search-field select, .search-field input[type="text"] {
+                margin-right: 0.5rem;
+                margin-bottom: 0;
+            }
+            .search-field input[type="text"] {
+                flex-grow: 1;
+            }
+            .search-field button {
+                width: auto;
+            }
+            .search-options {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .search-options > div {
+                width: auto;
+                margin-bottom: 0;
+            }
+        }
+
         /* 主要内容区域样式 */
         .main-content {
             flex: 1;
@@ -115,18 +134,47 @@
         /* 底部控制区域样式 */
         .bottom-controls {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
             padding: 10px 0;
         }
         
         #citation-format {
-            margin-right: 10px;
+            margin-bottom: 10px;
+            width: 100%;
         }
         
         #insertBibDiv {
             display: flex;
+            flex-direction: column;
             gap: 10px;
+            width: 100%;
+        }
+
+        #insertBibDiv button {
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .bottom-controls {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            #citation-format {
+                margin-bottom: 0;
+                width: auto;
+            }
+
+            #insertBibDiv {
+                flex-direction: row;
+                width: auto;
+            }
+
+            #insertBibDiv button {
+                width: auto;
+            }
         }
         
         /* 搜索结果列表样式 */
@@ -253,28 +301,26 @@
 </head>
 <body>
     <form class="search-form" onsubmit="performSearch(); return false;">
-        <div class="flex-wrap">
-            <div class="search-field">
-                <input type="text" id="search-input" name="query" placeholder="Search or Article ID" aria-label="Search term or terms">
-                <select id="search-field" name="searchtype">
-                    <option value="all">All fields</option>
-                    <option value="title">Title</option>
-                    <option value="author">Author(s)</option>
-                    <option value="abstract">Abstract</option>
-                    <option value="comments">Comments</option>
-                    <option value="journal_ref">Journal reference</option>
-                    <option value="acm_class">ACM classification</option>
-                    <option value="msc_class">MSC classification</option>
-                    <option value="report_num">Report number</option>
-                    <option value="paper_id">arXiv identifier</option>
-                    <option value="doi">DOI</option>
-                    <option value="orcid">ORCID</option>
-                    <option value="author_id">arXiv author ID</option>
-                    <option value="help">Help pages</option>
-                    <option value="full_text">Full text</option>
-                </select>
-                <button type="submit" id="search-button">Search</button>
-            </div>
+        <div class="search-field">
+            <input type="text" id="search-input" name="query" placeholder="Search or Article ID" aria-label="Search term or terms">
+            <select id="search-field" name="searchtype">
+                <option value="all">All fields</option>
+                <option value="title">Title</option>
+                <option value="author">Author(s)</option>
+                <option value="abstract">Abstract</option>
+                <option value="comments">Comments</option>
+                <option value="journal_ref">Journal reference</option>
+                <option value="acm_class">ACM classification</option>
+                <option value="msc_class">MSC classification</option>
+                <option value="report_num">Report number</option>
+                <option value="paper_id">arXiv identifier</option>
+                <option value="doi">DOI</option>
+                <option value="orcid">ORCID</option>
+                <option value="author_id">arXiv author ID</option>
+                <option value="help">Help pages</option>
+                <option value="full_text">Full text</option>
+            </select>
+            <button type="submit" id="search-button">Search</button>
         </div>
         <div class="search-options">
             <div>
@@ -296,7 +342,7 @@
                 </select>
             </div>
             <div>
-                <label for="results-per-page">每页显示:</label>
+                <label for="results-per-page">Results per page:</label>
                 <select id="results-per-page">
                     <option value="10">10</option>
                     <option value="20">20</option>
@@ -308,7 +354,7 @@
     
     <div class="main-content">
         <div id="results-container"></div>
-        <div id="loading-indicator" style="display: none;">搜索中...</div>
+        <div id="loading-indicator" style="display: none;">Searching...</div>
     </div>
     
     <div class="bottom-controls">
@@ -321,9 +367,9 @@
             <option value="bibtex">BibTeX</option>
             <option value="ris">RIS</option>
         </select>
-        <div id="insertBibDiv" class="flex">
-            <button id="addEditCitationBtn" class="button control i18n btn-text-default">Add/Edit Citation</button>
-            <button id="addEditBibliographyBtn" class="button control i18n btn-text-default">Add/Edit Bibliography</button>
+        <div id="insertBibDiv">
+            <button id="addEditCitationBtn" class="button control i18n btn-text-default">Add Citation</button>
+            <button id="addEditBibliographyBtn" class="button control i18n btn-text-default">Add Bibliography</button>
             <button id="refreshBtn" class="button control btn-text-default i18n">Refresh</button>
         </div>
     </div>
