@@ -32,5 +32,7 @@
 	{ "name": "pixabay", "discussion": "325" },
 	{ "name": "insertQR", "discussion": "" },
 	{ "name": "idphoto", "discussion": "" },
-	{ "name": "cvbuilder", "discussion": "" }
+	{ "name": "cvbuilder", "discussion": "" },
+	{ "name": "mathpix", "discussion": "" },
+	{ "name": "arxiv", "discussion": "" }
 ]
