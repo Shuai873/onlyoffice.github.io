@@ -9,7 +9,7 @@
 	"Nothing found": "Ничего не найдено",
 	"Style is not selected": "Стиль не выбран",
 	"Language is not selected": "Язык не выбран",
-	"Search references by author, title or year": "Поиск по автору, названию или году издания",
+	"Search arXiv papers by title, author, abstract or ID": "Поиск статей arXiv по названию, автору, аннотации или ID",
 	"Cancel": "Отмена",
 	"Insert Bibliography": "Вставить библиографию",
 	"Style": "Стиль",

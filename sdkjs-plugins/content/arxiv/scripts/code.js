@@ -136,16 +136,15 @@
             clearLibrary();
             loadLibrary(sdk.search(text, page), false, true, true, false, true);
         };
+        // 在搜索框中按下回车键时触发搜索
         elements.searchField.onkeypress = function (e) {
             if (e.keyCode == 13) searchFor(e.target.value, 0);
         };
-        elements.searchField.onblur = function (e) {
-            setTimeout(function () { searchFor(e.target.value, 0); }, 500);
-        };
-
+        // 当搜索框的值发生变化时，更新搜索清除按钮的显示状态
         elements.searchField.onkeyup = function (e) {
             switchClass(elements.searchClear, displayNoneClass, !e.target.value);
         };
+        // 当搜索清除按钮被点击时，清除搜索框的值
         elements.searchClear.onclick = function (e) {
             if (e.target.classList.contains(displayNoneClass)) return true;
             switchClass(elements.searchClear, displayNoneClass, true);
@@ -202,6 +201,7 @@
         selectedScroller = initScrollBox(elements.selectedHolder, elements.selectedThumb);
         docsScroller = initScrollBox(elements.docsHolder, elements.docsThumb, checkDocsScroll);
 
+        // 从Zotero的样式文件中获取样式数据
         fetch("https://www.zotero.org/styles-files/styles.json")
             .then(function (resp) { return resp.json(); })
             .then(function (json) {
@@ -807,7 +807,9 @@
         var root = document.createElement("div");
         root.classList.add("doc");
 
+        // 左侧复选框
         var checkHolder = document.createElement("div");
+        checkHolder.classList.add("checkbox-holder");
         var checkWrapper = document.createElement("div");
         checkWrapper.classList.add("checkbox");
         var check = document.createElement("input");
@@ -820,40 +822,67 @@
         checkWrapper.appendChild(document.createElement("span"));
         checkHolder.appendChild(checkWrapper);
 
+        // 右侧文档信息
         var docInfo = document.createElement("div");
         docInfo.classList.add("docInfo");
 
+        // 标题行
+        var titleRow = document.createElement("div");
+        titleRow.classList.add("title-row");
+
+        // arXiv ID 和链接
+        var idSpan = document.createElement("span");
+        idSpan.classList.add("list-identifier");
+        var arxivId = item.id.split('/').pop().replace('arxiv.org/abs/', '');
+        idSpan.innerHTML = `<a href="https://arxiv.org/abs/${item.id}" target="_blank">arXiv:${arxivId}</a> [<a href="${item.link}" target="_blank">pdf</a>, <a href="https://arxiv.org/format/${item.id}" target="_blank">other</a>]`;
+        titleRow.appendChild(idSpan);
+
+        // 分类
+        var categorySpan = document.createElement("span");
+        categorySpan.classList.add("list-category");
+        if (item.primaryCategory) {
+            categorySpan.textContent = item.primaryCategory;
+            titleRow.appendChild(categorySpan);
+        }
+
+        docInfo.appendChild(titleRow);
+
+        // 标题
         var title = document.createElement("div");
         title.textContent = item.title;
-        title.classList.add("title");
-        title.style.fontWeight = "bold";
+        title.classList.add("list-title");
+        title.style.fontSize = "12px";  // 增大字号
+        title.style.fontWeight = "bold"; // 加粗 
         docInfo.appendChild(title);
 
+        // 作者
         var authors = document.createElement("div");
-        authors.textContent = 'Authors: ' + item.author.map(a => a.name).join(', ');
-        authors.classList.add("author");
+        authors.classList.add("list-authors");
+        authors.innerHTML = '<strong>Authors:</strong> ' + item.author.map(a => 
+            `<a href="https://arxiv.org/search/?searchtype=author&query=${encodeURIComponent(a.name)}" target="_blank">${a.name}</a>`
+        ).join(', ');
         docInfo.appendChild(authors);
 
-        var published = document.createElement("div");
-        published.textContent = 'Published: ' + item.published;
-        published.classList.add("published");
-        docInfo.appendChild(published);
-
-        var link = document.createElement("a");
-        link.href = item.link;
-        link.textContent = 'View on Arxiv';
-        link.target = "_blank";
-        link.classList.add("link");
-        docInfo.appendChild(link);
-
+        // 摘要
         var summary = document.createElement("div");
-        summary.textContent = 'Abstract: ' + item.summary;   
-        summary.classList.add("summary");
+        summary.classList.add("list-abstract");
+        summary.innerHTML = '<strong>Abstract:</strong> ' + item.summary;
         docInfo.appendChild(summary);
+
+        // 元数据
+        var metadata = document.createElement("div");
+        metadata.classList.add("list-meta");
+        var submittedDate = new Date(item.published).toDateString();
+        var announcedDate = item.updated ? 
+            `; <strong>originally announced</strong> ${new Date(item.updated).toLocaleString('default', { month: 'long' })} ${new Date(item.updated).getFullYear()}` : 
+            '';
+        metadata.innerHTML = `<span class="list-date"><strong>Submitted</strong> ${submittedDate}${announcedDate}</span>`;
+        docInfo.appendChild(metadata);
 
         root.appendChild(checkHolder);
         root.appendChild(docInfo);
 
+        // 点击事件处理
         function selectItem(input, item) {
             return function (e) {
                 input.checked = !input.checked;
@@ -1027,6 +1056,13 @@
 				var arrItems = [];
 				var tmpObj = {};
 				var bibField = null;
+				
+				// 首先按照字段在文档中的位置排序
+				arrFields.sort(function(a, b) {
+					return a.Position - b.Position;  // 使用字段的Position属性进行排序
+				});
+
+				// 然后按顺序处理每个字段
 				arrFields.forEach(function(field) {
 					if (field.Value.indexOf(citPrefix) !== -1) {
 						var citationItems = JSON.parse(field.Value.slice(citPrefix.length)).citationItems;
@@ -1042,7 +1078,7 @@
 				});
 
 				if (arrItems.length) {
-					arrItems.sort( function(itemA, itemB) { return (itemA.index > itemB.index ? 1 : -1) } );
+					// 不再需要对 arrItems 进行排序，因为已经按文档位置排序了
 					arrItems.forEach(function(item) {
 						item.index = ++cslItems.count;
 						cslItems[item.id] = item;

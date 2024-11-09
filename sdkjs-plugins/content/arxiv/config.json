@@ -8,20 +8,20 @@
 		"de": "arXiv",
 		"zh-CN": "arXiv"
 	},
-	"guid": "asc.{F7D9E4A2-B3C8-4567-9012-345678901234}",
-	"version": "1.0.3",
-	"minVersion": "7.3.3",
+	"guid": "asc.{B8D2E5F1-A4C7-4932-8765-43210D876543}",
+	"version": "1.0.0",
+	"minVersion": "1.0.0",
 
 	"variations" : [
 		{
-			"description": "Create bibliographies in the required style using arXiv service.",
+			"description": "Search papers and create bibliographies in the required style using arXiv service.",
 			"descriptionLocale": {
-				"ru": "Оформляйте библиографические списки в нужном стиле с помощью arXiv.",
-				"fr": "Créez des bibliographies dans le style nécessaire avec arXiv.",
-				"es": "Cree bibliografías en el estilo requerido utilizando el servicio arXiv.",
-				"pt-BR": "Crie bibliografias no estilo desejado usando o serviço arXiv.",
-				"de": "Erstellen Sie Literaturverzeichnisse im gewünschten Stil mittels arXiv.",
-				"zh-CN": "使用arXiv服务以所需样式创建参考书目。"
+				"ru": "Поиск статей и оформление библиографических списков в нужном стиле с помощью сервиса arXiv.",
+				"fr": "Recherchez des articles et créez des bibliographies dans le style souhaité avec le service arXiv.",
+				"es": "Busque artículos y cree bibliografías en el estilo requerido utilizando el servicio arXiv.",
+				"pt-BR": "Pesquise artigos e crie bibliografias no estilo desejado usando o serviço arXiv.",
+				"de": "Suchen Sie nach Artikeln und erstellen Sie Literaturverzeichnisse im gewünschten Stil mit dem arXiv-Dienst.",
+				"zh-CN": "使用arXiv服务检索文献，并以所需样式创建参考书目。"
 			},
 			"url": "index.html",
 			"icons": [ "resources/light/icon.png", "resources/light/icon@2x.png" ],

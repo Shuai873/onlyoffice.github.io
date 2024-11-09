@@ -60,16 +60,28 @@
                 var totalResults = parseInt(xmlDoc.getElementsByTagName("opensearch:totalResults")[0].textContent);
                 
                 var entries = xmlDoc.getElementsByTagName("entry");
-                var items = Array.from(entries).map(entry => ({
-                    id: entry.getElementsByTagName("id")[0].textContent,
-                    title: entry.getElementsByTagName("title")[0].textContent,
-                    summary: entry.getElementsByTagName("summary")[0].textContent,
-                    author: Array.from(entry.getElementsByTagName("author")).map(author => ({
-                        name: author.getElementsByTagName("name")[0].textContent
-                    })),
-                    published: entry.getElementsByTagName("published")[0].textContent,
-                    link: entry.getElementsByTagName("link")[0].getAttribute("href")
-                }));
+                var items = Array.from(entries).map(entry => {
+                    // Get primary category
+                    var primaryCategory = entry.getElementsByTagName("arxiv:primary_category")[0];
+                    var category = primaryCategory ? primaryCategory.getAttribute("term") : null;
+
+                    // Get update date
+                    var updated = entry.getElementsByTagName("updated")[0];
+                    var updatedDate = updated ? updated.textContent : null;
+
+                    return {
+                        id: entry.getElementsByTagName("id")[0].textContent,
+                        title: entry.getElementsByTagName("title")[0].textContent,
+                        summary: entry.getElementsByTagName("summary")[0].textContent,
+                        author: Array.from(entry.getElementsByTagName("author")).map(author => ({
+                            name: author.getElementsByTagName("name")[0].textContent
+                        })),
+                        published: entry.getElementsByTagName("published")[0].textContent,
+                        updated: updatedDate,
+                        primaryCategory: category,
+                        link: entry.getElementsByTagName("link")[0].getAttribute("href")
+                    };
+                });
 
                 resolve({ 
                     items: items,
@@ -81,8 +93,62 @@
             });
         }
 
+        function convertToCSL(item) {
+            // 提取 arXiv ID
+            var arxivId = item.id.split('/').pop().replace('arxiv.org/abs/', '');
+            
+            // 构建更完整的 CSL 数据
+            var cslData = {
+                id: item.id,
+                title: item.title,
+                
+                // 更好地处理作者名字
+                author: item.author.map(a => {
+                    let nameParts = a.name.trim().split(' ');
+                    return {
+                        family: nameParts.pop(), // 姓氏
+                        given: nameParts.join(' '), // 名字
+                        literal: a.name // 完整名字
+                    };
+                }),
+
+                // 添加更多日期相关信息
+                issued: { 'date-parts': [[new Date(item.published).getFullYear()]] },
+                accessed: { 'date-parts': [[new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()]] },
+                
+                // arXiv 特定字段
+                'container-title': 'arXiv',
+                'publisher': 'arXiv',
+                'archive': 'arXiv',
+                'archive_location': arxivId,
+                'genre': 'preprint',
+                
+                // 分类信息
+                'collection-title': item.primaryCategory,
+                
+                // URL 和 abstract
+                URL: item.link,
+                abstract: item.summary,
+                
+                // 文档类型
+                type: 'article-journal',
+                
+                // 版本信息
+                version: item.updated ? new Date(item.updated).toISOString() : undefined,
+                
+                // 标识符
+                DOI: `arXiv:${arxivId}`,
+                
+                // 语言 (arXiv 默认为英语)
+                language: 'en'
+            };
+
+            return cslData;
+        }
+
         return {
-            search: search
+            search: search,
+            convertToCSL: convertToCSL
         }
     }
 })();

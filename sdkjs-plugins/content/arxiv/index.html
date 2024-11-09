@@ -18,27 +18,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Arxiv</title>
+    <!-- Import required JS and CSS files -->
     <script src="vendor/jQuery-2.2.2-min/jquery-v2.2.2-min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="resources/css/plugin_style.css">
+    <!-- Import ONLYOFFICE Plugin SDK -->
     <link rel="stylesheet" href="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.css">
     <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins.js"></script>
     <script type="text/javascript" src="https://onlyoffice.github.io/sdkjs-plugins/v1/plugins-ui.js"></script>
+    <!-- Compatibility polyfills -->
     <script src="scripts/thirdparty/fetch.umd.js"></script>
     <script src="scripts/thirdparty/promise-polyfill.min.js"></script>
     <script src="scripts/thirdparty/url-polyfill.min.js"></script>
+    <!-- Citation processing library -->
     <script src="scripts/citeproc/citeproc_commonjs.js"></script>
 </head>
 <body id="body" spellcheck="false" class="noselect">
-	<div id="loader" class="cssload-container display-none">
+    <!-- Loading animation -->
+    <div id="loader" class="cssload-container display-none">
         <div class="cssload-loading"><i></i><i></i><i></i><i></i></div>
     </div>
+    <!-- Error message display area -->
     <div id="errorWrapper" class="errorMsg display-none"></div>
 
     <div id="content">
-
         <div id="mainCont" class="flexCol">
-
+            <!-- API Configuration Interface -->
             <div id="configState" class="display-none">
                 <div class="mrtop label">
                     <span class="i18n">API Key</span>
@@ -48,17 +53,24 @@
                 <button id="saveAsTextBtn" class="btn-text-default i18n" style="margin-top: 16px; width: 100%;">Save as text</button>
             </div>
 
+            <!-- Main Interface -->
             <div id="mainState" class="flexCol flexSize">
+                <!-- Selected References Display Area -->
                 <div id="selectedWrapper">
                     <div class="flexCol flexSize flexCenter">
                         <div id="selectedHolder"></div>
                     </div>
                     <div id="selectedThumb" class="scrollThumb display-none"></div>
                 </div>
+                
+                <!-- Search Box -->
                 <label id="searchLabel">
-                    <input id="searchField" autocomplete="off" class="form-control i18n" type="text" placeholder="Search references by author, title or year" style="width: 100%;"/>
+                    <input id="searchField" autocomplete="off" class="form-control i18n" type="text" 
+                           placeholder="Search arXiv papers by title, author, abstract or ID" style="width: 100%;"/>
                     <span id="searchClear" class="display-none">&#xd7;</span>
                 </label>
+
+                <!-- References List Display Area -->
                 <div id="docsWrapper" class="flexSize">
                     <div class="flexCol flexSize">
                         <div id="docsHolder" class="flexCol"></div>
@@ -68,18 +80,25 @@
                     </div>
                     <div id="docsThumb" class="scrollThumb display-none"></div>
                 </div>
+
+                <!-- Control Panel -->
                 <div id="controlsHolder" class="flexCol">
-					<div id="buttonsWrapper" class="flex" style="justify-content: space-between;">
-						<div class="flex" style="align-items: center;">
-							<button id="insertLinkBtn" class="button control i18n btn-text-default" style="flex: 1; margin-left: 8px;" disabled>Insert Citation</button>
-							<input id="omitAuthor" type="checkbox" class="form-control i18n hidden" title="Omit Author">
-						</div>
+                    <!-- Citation Insert Button Group -->
+                    <div id="buttonsWrapper" class="flex" style="justify-content: space-between;">
+                        <div class="flex" style="align-items: center;">
+                            <button id="insertLinkBtn" class="button control i18n btn-text-default" style="flex: 1; margin-left: 8px;" disabled>Insert Citation</button>
+                            <input id="omitAuthor" type="checkbox" class="form-control i18n hidden" title="Omit Author">
+                        </div>
                         <button id="cancelBtn" class="button control i18n btn-text-default" disabled>Cancel select</button>
                     </div>
-					<div id="insertBibDiv" class="flex">
-						<button id="insertBibBtn" class="button control i18n btn-text-default">Insert Bibliography</button>
-						<button id="refreshBtn" class="button control btn-text-default i18n">Refresh</button>
-					</div>
+                    
+                    <!-- Bibliography Insert Button Group -->
+                    <div id="insertBibDiv" class="flex">
+                        <button id="insertBibBtn" class="button control i18n btn-text-default">Insert Bibliography</button>
+                        <button id="refreshBtn" class="button control btn-text-default i18n">Refresh</button>
+                    </div>
+
+                    <!-- Citation Style Selector -->
                     <div id="styleWrapper">
                         <div class="label">
                             <span class="i18n">Style</span>
@@ -154,17 +173,19 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
+        <!-- Footer -->
         <div id="footerCont">
             <span><a href="http://arxiv.org/" target="_blank" id="arxiv-link" class="link i18n">Open Arxiv website</a></span>
             <span id="logoutLink" class="link display-none i18n">Reconfigure</span>
         </div>
-
     </div>
-	<div id="div_temp" class="hidden"></div>
 
+    <!-- Temporary DOM Element Container -->
+    <div id="div_temp" class="hidden"></div>
+
+    <!-- Application Logic Scripts -->
     <script src="scripts/arxiv.js"></script>
     <script src="scripts/code.js"></script>
 </body>

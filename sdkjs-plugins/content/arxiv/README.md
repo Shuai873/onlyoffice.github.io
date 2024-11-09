@@ -1,4 +1,4 @@
-# arXiv Citation Plugin for ONLYOFFICE
+# arXiv Plugin
 
 This plugin allows you to search and cite arXiv papers directly in ONLYOFFICE editors. It provides an easy way to insert citations and generate bibliographies in various citation styles.
 
@@ -19,7 +19,8 @@ This plugin allows you to search and cite arXiv papers directly in ONLYOFFICE ed
 
 1. Search Papers
    - Enter search query using arXiv search syntax (e.g. "au:Einstein" for author, "ti:quantum" for title, "cat:physics" for category)
-   - Browse through paginated results
+   - Browse through paginated results (10 papers per page)
+   - Results are sorted by relevance by default
    - View paper details including title, authors, publication date and abstract
 
 2. Insert Citations
@@ -51,7 +52,7 @@ The plugin includes several popular citation styles by default:
 - Modern Language Association 8th edition
 - Nature
 
-Click "More Styles..." in the style selector to access hundreds of additional citation styles from the Citation Style Language (CSL) repository, including journal-specific styles and regional citation formats.
+Click "More Styles..." in the style selector to access additional citation styles from the Zotero Style Repository, which provides thousands of CSL (Citation Style Language) citation styles, including journal-specific styles and regional citation formats.
 
 ## Requirements
 

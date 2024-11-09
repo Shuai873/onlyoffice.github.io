@@ -9,7 +9,7 @@
 	"Nothing found": "検索結果はありません",
 	"Style is not selected": "スタイルは選択されていません",
 	"Language is not selected": "言語は選択されていません",
-	"Search references by author, title or year": "著者名、タイトル、年度で文献を検索する",
+	"Search arXiv papers by title, author, abstract or ID": "タイトル、著者、要旨、または論文IDでarXiv論文を検索",
 	"Cancel": "キャンセル",
 	"Insert Bibliography": "文献を貼り付ける",
 	"Style": "スタイル",

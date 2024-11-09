@@ -9,7 +9,7 @@
 	"Nothing found": "Rien n'a été trouvé",
 	"Style is not selected": "Le style n'est pas sélectionné",
 	"Language is not selected": "La langue n'est pas sélectionnée",
-	"Search references by author, title or year": "Rechercher les références par auteur, titre ou année",
+	"Search arXiv papers by title, author, abstract or ID": "Rechercher des articles arXiv par titre, auteur, résumé ou identifiant",
 	"Cancel": "Annuler",
 	"Insert Bibliography": "Insérer une bibliographie",
 	"Style": "Style",

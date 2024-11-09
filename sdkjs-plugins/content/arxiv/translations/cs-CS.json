@@ -9,7 +9,7 @@
 	"Nothing found": "Nic nebylo nalezeno",
 	"Style is not selected": "Nebyl vybrán styl",
 	"Language is not selected": "Nebyl vybrán jazyk",
-	"Search references by author, title or year": "Vyhledávat odkazy podle autora, názvu nebo roku",
+	"Search arXiv papers by title, author, abstract or ID": "Vyhledávat články arXiv podle názvu, autora, abstraktu nebo ID",
 	"Cancel": "Storno",
 	"Insert Bibliography": "Vložit bibliografii",
 	"Style": "Styl",
