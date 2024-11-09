@@ -896,7 +896,25 @@
 
         var f = selectItem(check, item);
         checkWrapper.onclick = f;
-        docInfo.onclick = f;
+        title.onclick = f;
+        summary.onclick = f;
+
+        // 给标题和摘要添加鼠标样式以表明可点击
+        title.style.cursor = 'pointer';
+        summary.style.cursor = 'pointer';
+
+        // 给链接添加阻止事件冒泡
+        titleRow.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        authors.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        metadata.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
 
         return root;
     }

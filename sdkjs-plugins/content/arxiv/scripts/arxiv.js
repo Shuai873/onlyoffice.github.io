@@ -22,7 +22,7 @@
     if (!window.Asc.plugin.arxiv) window.Asc.plugin.arxiv = {};
 
     window.Asc.plugin.arxiv.api = function (cfg) {
-        var baseUrl = cfg.baseUrl || "http://export.arxiv.org/api/";
+        var baseUrl = cfg.baseUrl || "https://export.arxiv.org/api/";
 
         function getRequest(url) {
             return new Promise(function (resolve, reject) {
