@@ -822,7 +822,7 @@
         checkWrapper.appendChild(document.createElement("span"));
         checkHolder.appendChild(checkWrapper);
 
-        // 右侧文档信息
+        // 右��文档信息
         var docInfo = document.createElement("div");
         docInfo.classList.add("docInfo");
 
@@ -874,11 +874,14 @@
         // 元数据
         var metadata = document.createElement("div");
         metadata.classList.add("list-meta");
-        var submittedDate = new Date(item.published).toDateString();
+        var submittedDate = `<strong>Submitted</strong> ${new Date(item.published).toDateString()}`;
         var announcedDate = item.updated ? 
-            `; <strong>originally announced</strong> ${new Date(item.updated).toLocaleString('default', { month: 'long' })} ${new Date(item.updated).getFullYear()}` : 
+            `; <strong>originally announced</strong> ${new Date(item.updated).toLocaleString('en-US', { month: 'long' })} ${new Date(item.updated).getFullYear()}` : 
             '';
-        metadata.innerHTML = `<span class="list-date"><strong>Submitted</strong> ${submittedDate}${announcedDate}</span>`;
+        var dateSpan = document.createElement("span");
+        dateSpan.classList.add("list-date");
+        dateSpan.innerHTML = submittedDate + announcedDate;
+        metadata.appendChild(dateSpan);
         docInfo.appendChild(metadata);
 
         root.appendChild(checkHolder);
@@ -1104,7 +1107,7 @@
 						cslItems[item.id] = item;
 					});
 				} else if (bUpdadeFormatter && bibField && bUpadteAll) {
-					// нет смысла ещё раз искать поле библиографии
+					// нет смысла ещё раз искать поле библиогафии
 					bUpdadeFormatter = false;
 					bibField["Content"] = getMessage(bibPlaceholder);
 					window.Asc.plugin.executeMethod("UpdateAddinFields", [[bibField]], function() {
