@@ -95,7 +95,7 @@
 
         function convertToCSL(item) {
             // 提取 arXiv ID
-            var arxivId = item.id.split('/').pop().replace('arxiv.org/abs/', '');
+            var arxivId = item.id.replace(/^(?:https?:\/\/)?arxiv\.org\/abs\/(.+)$/, '$1');// Remove "http://arxiv.org/abs/"
             
             // 构建更完整的 CSL 数据
             var cslData = {
@@ -148,7 +148,7 @@
 
         return {
             search: search,
-            convertToCSL: convertToCSL
+            convertToCSL: convertToCSL,
         }
     }
 })();

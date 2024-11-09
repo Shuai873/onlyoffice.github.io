@@ -833,8 +833,10 @@
         // arXiv ID 和链接
         var idSpan = document.createElement("span");
         idSpan.classList.add("list-identifier");
-        var arxivId = item.id.split('/').pop().replace('arxiv.org/abs/', '');
-        idSpan.innerHTML = `<a href="https://arxiv.org/abs/${item.id}" target="_blank">arXiv:${arxivId}</a> [<a href="${item.link}" target="_blank">pdf</a>, <a href="https://arxiv.org/format/${item.id}" target="_blank">other</a>]`;
+        var arxivId = item.id.replace(/^(?:https?:\/\/)?arxiv\.org\/abs\/(.+)$/, '$1');
+        idSpan.innerHTML = `<a href="https://arxiv.org/abs/${arxivId}" target="_blank">arXiv:${arxivId}</a> [`+
+            `<a href="https://arxiv.org/pdf/${arxivId}" target="_blank">pdf</a>, `+
+            `<a href="https://arxiv.org/format/${arxivId}" target="_blank">other</a>]`;
         titleRow.appendChild(idSpan);
 
         // 分类
