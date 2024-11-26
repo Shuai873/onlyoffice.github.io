@@ -217,6 +217,20 @@
         updateCodeDisplay(index);
     }
 
+    function cleanLatexForWord(latex) {
+        // Remove \begin{} and \end{} keywords as they are not supported in Word
+        // See: https://support.microsoft.com/en-us/office/linear-format-equations-using-unicodemath-and-latex-in-word-2e00618d-b1fd-49d8-8cb4-8d17f25754f8
+        let cleanedLatex = latex;
+        // Remove \begin{environment}{params}
+        cleanedLatex = cleanedLatex.replace(/\\begin\{[^}]*\}(\{[^}]*\})?\s*/g, '');
+        // Remove \end{environment}
+        cleanedLatex = cleanedLatex.replace(/\\end\{[^}]*\}\s*/g, '');
+        // For matrices, convert from \begin{matrix} style to \matrix{} style
+        cleanedLatex = cleanedLatex.replace(/\\begin\{matrix\}(.*?)\\end\{matrix\}/g, (match, content) => {
+            return `\\matrix{${content}}`;
+        });
+        return cleanedLatex;
+    }
 
     function updateCodeDisplay(index) {
         const resultBox = resultContainer.children[index + 1];
@@ -232,6 +246,7 @@
         switch (format) {
             case 'latex':
                 code = data.latex_styled || data.data?.find(item => item.type === 'latex')?.value || 'No LaTeX result';
+                code = cleanLatexForWord(code);
                 break;
             // case 'asciimath':
             //     code = data.data?.find(item => item.type === 'asciimath')?.value || 'No AsciiMath result';
