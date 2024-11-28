@@ -60,6 +60,7 @@ The selected formats will be available in the dropdown menu for each recognized 
 
 The plugin provides a fully editable text box for each recognition result:
 
+- Some advanced LaTeX commands may not be supported in ONLYOFFICE Document Editor. You may need to manually modify complex mathematical expressions to use basic LaTeX syntax that is compatible with the editor
 - Correct any recognition mistakes
 - Use the edited version when copying or inserting into your document
 

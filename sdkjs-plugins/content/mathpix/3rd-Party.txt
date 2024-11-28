@@ -12,6 +12,3 @@ Privacy Policy: https://mathpix.com/privacy
 Copyright (c) Mathpix, Inc.
 Used with permission as part of the Mathpix API integration
 
-4. Polyfill.io (https://polyfill.io)
-License: MIT License
-https://github.com/financial-times/polyfill-service/blob/master/LICENSE.md 
