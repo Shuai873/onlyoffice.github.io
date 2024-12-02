@@ -17,5 +17,6 @@
     "Image": "Изображение",
     "No preview available": "Предпросмотр недоступен",
     "Credentials saved!": "Учетные данные сохранены!",
-    "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "Пожалуйста, введите ID приложения Mathpix и ключ приложения в панели конфигурации."
+    "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "Пожалуйста, введите ID приложения Mathpix и ключ приложения в панели конфигурации.",
+    "Note: Some advanced LaTeX syntax may not be compatible with Word. Manual adjustment might be needed.": "Примечание: Некоторые расширенные синтаксические конструкции LaTeX могут быть несовместимы с Word. Может потребоваться ручная корректировка."
 } 

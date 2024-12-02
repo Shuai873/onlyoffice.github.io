@@ -230,7 +230,28 @@
         MathJax.typesetPromise([previewContainer]).catch((err) => console.log('MathJax error:', err));
 
         const formatSelector = resultBox.querySelector('.formatSelector');
-        formatSelector.addEventListener('change', () => updateCodeDisplay(index));
+        formatSelector.addEventListener('change', () => {
+            updateCodeDisplay(index);
+            // Add warning message for LaTeX format
+            if (formatSelector.value === 'latex') {
+                const warningDiv = resultBox.querySelector('.latex-warning') || document.createElement('div');
+                warningDiv.className = 'latex-warning';
+                warningDiv.innerHTML = '⚠️' + window.Asc.plugin.tr('Note: Some advanced LaTeX syntax may not be compatible with Word. Manual adjustment might be needed.');
+                warningDiv.style.color = '#DDAA00';
+                warningDiv.style.fontSize = '10px';
+                warningDiv.style.marginTop = '5px';
+                
+                const codeDisplay = resultBox.querySelector('.codeDisplay');
+                if (!resultBox.querySelector('.latex-warning')) {
+                    codeDisplay.parentNode.insertBefore(warningDiv, codeDisplay);
+                }
+            } else {
+                const warningDiv = resultBox.querySelector('.latex-warning');
+                if (warningDiv) {
+                    warningDiv.remove();
+                }
+            }
+        });
 
         const copyCodeBtn = resultBox.querySelector('.copyCodeBtn');
         copyCodeBtn.addEventListener('click', () => copyCode(index));
@@ -239,6 +260,11 @@
         insertCodeBtn.addEventListener('click', () => insertCode(index));
 
         updateCodeDisplay(index);
+
+        // Trigger the change event to show warning if LaTeX is initially selected
+        if (formatSelector.value === 'latex') {
+            formatSelector.dispatchEvent(new Event('change'));
+        }
     }
 
     function toWordLatex(latex) {

@@ -17,5 +17,6 @@
     "Image": "图片",
     "No preview available": "预览不可用",
     "Credentials saved!": "凭据已保存！",
-    "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "请在配置面板中输入您的 Mathpix 应用 ID 和应用密钥。"
+    "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "请在配置面板中输入您的 Mathpix 应用 ID 和应用密钥。",
+    "Note: Some advanced LaTeX syntax may not be compatible with Word. Manual adjustment might be needed.": "注意：某些高级 LaTeX 语法可能与 Word 不兼容，可能需要手动调整。"
 } 

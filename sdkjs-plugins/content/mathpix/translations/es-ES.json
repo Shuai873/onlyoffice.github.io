@@ -17,5 +17,6 @@
     "Image": "Imagen",
     "No preview available": "Vista previa no disponible",
     "Credentials saved!": "¡Credenciales guardadas!",
-    "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "Por favor, ingrese tanto su ID de aplicación Mathpix como su clave APP en el panel de configuración."
+    "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "Por favor, ingrese tanto su ID de aplicación Mathpix como su clave APP en el panel de configuración.",
+    "Note: Some advanced LaTeX syntax may not be compatible with Word. Manual adjustment might be needed.": "Nota: Algunas sintaxis avanzadas de LaTeX pueden no ser compatibles con Word. Puede ser necesario un ajuste manual."
 } 

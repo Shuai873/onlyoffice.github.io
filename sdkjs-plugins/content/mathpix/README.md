@@ -1,75 +1,106 @@
-# Mathpix Plugin
+# Mathpix Plugin for ONLYOFFICE
 
-The Mathpix plugin for ONLYOFFICE allows you to extract mathematical formulas and text from images and insert them directly into your documents. It uses the Mathpix OCR API to recognize mathematical equations and convert them into LaTeX, plain text, MathML, or HTML format.
+Convert mathematical formulas from images to editable text! This plugin allows you to easily extract mathematical formulas and text from images and insert them directly into your ONLYOFFICE documents.
 
-## Features
+## 🌟 Key Features
 
-- Extract mathematical formulas and text from images
-- Support multiple image uploads
-- Customizable output formats:
-  - LaTeX 
-  - Text 
-  - MathML 
-  - HTML 
-- Copy results to clipboard or insert into document directly
-- Save API credentials locally
+- **Multiple Input Methods**:
+  - Click to upload images
+  - Drag and drop images to the plugin window
+  - Directly paste images (Ctrl+V)
+  - Support for batch uploading multiple images
 
-## Installation
+- **Smart Recognition**:
+  - Automatic recognition of mathematical formulas and text
+  - Real-time preview of recognition results
+  - Support for manual editing of results
 
-1. Download the Mathpix plugin from the ONLYOFFICE plugin marketplace
-2. Install the plugin in your ONLYOFFICE Document Editor
-3. Get your Mathpix API credentials:
-   - Register at [Mathpix OCR](https://mathpix.com/ocr)
-   - Obtain your App ID and APP Key
+- **Flexible Output Formats**:
+  - LaTeX (ideal for mathematical formulas)
+  - Text
+  - MathML
+  - HTML
 
-## How to use
+- **Convenient Operations**:
+  - One-click copy results
+  - Direct insertion into documents
+  - Dark theme support
 
-1. Open the Mathpix plugin in ONLYOFFICE
+## 🚀 Quick Start
 
-2. Configure your settings:
-   - Click the settings gear icon (⚙️)
-   - Enter your Mathpix App ID and APP Key
-   - Click "Save Credentials"
-   - Select your preferred output formats
+### 1. Get API Keys
+1. Visit [Mathpix OCR](https://mathpix.com/ocr) to register
+2. Obtain your App ID and APP Key
 
-3. Upload images containing mathematical formulas:
-   - Click the upload area to select files
+### 2. Configure Plugin
+1. Click the ⚙️ icon in the top right corner
+2. Enter your App ID and APP Key
+3. Click "Save Credentials"
+4. Select your preferred output formats (LaTeX and Text enabled by default)
 
-4. Click "Recognize" to process the images
+### 3. Using the Plugin
 
-5. For each result:
-   - Preview the rendered mathematics
-   - Choose from your selected output formats in the dropdown
-   - Edit the recognition result if needed
-   - Copy the result or insert it into your document
+#### Upload Images
+- Click the upload area to select files
+- Or drag and drop images into the upload area
+- Or use Ctrl+V to paste images from clipboard
 
-6. Use "Clear" to remove all images and results
+#### Recognition and Usage
+1. Click the "Recognize" button to start processing
+2. For each recognition result:
+   - View the preview
+   - Select output format from dropdown menu
+   - Edit recognition text if needed
+   - Use "Copy" to copy or "Insert" to add to document
 
-## Output Format Options
+#### Important Notes
+- When using LaTeX format, some complex mathematical expressions may need manual adjustment to work with ONLYOFFICE editor
+- Preview results before insertion to ensure accuracy
+- If recognition results are unsatisfactory, try using clearer images
 
-You can enable or disable different output formats in the settings (⚙️):
+## 💡 Usage Tips
 
-- LaTeX: Perfect for mathematical equations and symbols (enabled by default)
-- Plain Text: Simple text extraction without formatting (enabled by default)
-- MathML: XML-based format for mathematical notation
-- HTML: Web-friendly format with embedded mathematics
+1. **Batch Processing**:
+   - Upload multiple images at once
+   - All images will show recognition results in sequence
 
-The selected formats will be available in the dropdown menu for each recognized image.
+2. **Format Selection**:
+   - LaTeX: Best for mathematical formulas
+   - Text: Suitable for plain text content
+   - MathML: For XML format requirements
+   - HTML: For web-friendly format
 
-## Editing Recognition Results
+3. **Editing Features**:
+   - All recognition results are directly editable
+   - Make necessary modifications before document insertion
 
-The plugin provides a fully editable text box for each recognition result:
-
-- Some advanced LaTeX commands may not be supported in ONLYOFFICE Document Editor. You may need to manually modify complex mathematical expressions to use basic LaTeX syntax that is compatible with the editor
-- Correct any recognition mistakes
-- Use the edited version when copying or inserting into your document
-
-## Requirements
+## 🔧 System Requirements
 
 - ONLYOFFICE Document Editor
-- Mathpix API credentials
-- Internet connection for API access
+- Valid Mathpix API credentials
+- Internet connection
 
-## Feedback and Support
+## 🆘 Common Issues
 
-For any issues or suggestions, please submit them to our GitHub repository or contact ONLYOFFICE support. 
+1. **Recognition Failed?**
+   - Verify API credentials are correct
+   - Ensure image is clear and readable
+   - Check internet connection
+
+2. **Inserted Formula Displays Incorrectly?**
+   - Try using basic LaTeX syntax
+   - Check for unsupported advanced syntax
+   - Manually adjust complex expressions
+
+3. **How to Clear Everything?**
+   - Click the "Clear" button to reset plugin state
+
+## 📝 Feedback and Support
+
+If you encounter issues or have suggestions:
+- Submit issues to our GitHub repository
+- Contact ONLYOFFICE support team
+
+---
+
+💪 Make mathematical formula input simple, enjoy efficient document editing!
