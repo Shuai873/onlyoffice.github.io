@@ -6,8 +6,6 @@ Convert mathematical formulas from images to editable text! This plugin allows y
 
 - **Multiple Input Methods**:
   - Click to upload images
-  - Drag and drop images to the plugin window
-  - Directly paste images (Ctrl+V)
   - Support for batch uploading multiple images
 
 - **Smart Recognition**:
@@ -42,8 +40,7 @@ Convert mathematical formulas from images to editable text! This plugin allows y
 
 #### Upload Images
 - Click the upload area to select files
-- Or drag and drop images into the upload area
-- Or use Ctrl+V to paste images from clipboard
+- Select multiple files at once for batch processing
 
 #### Recognition and Usage
 1. Click the "Recognize" button to start processing
