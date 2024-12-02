@@ -52,6 +52,15 @@
 
     window.Asc.plugin.init = function () {
         
+        const theme = window.Asc.plugin.theme;
+        if (theme) {
+            if (theme.type === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        }
+        
         // Load saved credentials
         appIdInput.value = localStorage.getItem('mathpixAppId') || '';
         appKeyInput.value = localStorage.getItem('mathpixAppKey') || '';
@@ -79,6 +88,15 @@
 
         // Add translation support
         window.Asc.plugin.onTranslate = applyTranslations;
+
+        // Add theme change listener
+        window.Asc.plugin.onThemeChanged = function(theme) {
+            if (theme.type === 'dark') {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        };
     };
     
     function handleDrop(e) {
@@ -181,14 +199,20 @@
     function displayResult(data, index) {
         const resultBox = document.createElement('div');
         resultBox.className = 'result-box';
+        
+        // When the LaTeX result is 'No LaTeX result', the 'Text' option will be selected by default
+        const latexResult = data.latex_styled || data.data?.find(item => item.type === 'latex')?.value;
+        const isNoLatexResult = !latexResult || latexResult === 'No LaTeX result';
+        
         resultBox.innerHTML = `
             <h3 class="i18n">Image ${index + 1}</h3>
             <div class="preview-container"></div>
             <select class="formatSelector">
                 ${Array.from(outputFormatCheckboxes)
                     .filter(checkbox => checkbox.checked)
-                    .map(checkbox => `<option value="${checkbox.value}" class="i18n">${checkbox.value.charAt(0).toUpperCase() + checkbox.value.slice(1)}</option>`)
-                    .join('')}
+                    .map(checkbox => 
+                        `<option value="${checkbox.value}" class="i18n" ${isNoLatexResult && checkbox.value === 'text' ? 'selected' : ''}>${checkbox.value.charAt(0).toUpperCase() + checkbox.value.slice(1)}</option>`
+                    ).join('')}
             </select>
             <div class="codeDisplay" contenteditable="true" spellcheck="false"></div>
             <button class="copyCodeBtn i18n">Copy</button>
@@ -217,19 +241,57 @@
         updateCodeDisplay(index);
     }
 
-    function cleanLatexForWord(latex) {
-        // Remove \begin{} and \end{} keywords as they are not supported in Word
+    function toWordLatex(latex) {
         // See: https://support.microsoft.com/en-us/office/linear-format-equations-using-unicodemath-and-latex-in-word-2e00618d-b1fd-49d8-8cb4-8d17f25754f8
-        let cleanedLatex = latex;
-        // Remove \begin{environment}{params}
-        cleanedLatex = cleanedLatex.replace(/\\begin\{[^}]*\}(\{[^}]*\})?\s*/g, '');
-        // Remove \end{environment}
-        cleanedLatex = cleanedLatex.replace(/\\end\{[^}]*\}\s*/g, '');
-        // For matrices, convert from \begin{matrix} style to \matrix{} style
-        cleanedLatex = cleanedLatex.replace(/\\begin\{matrix\}(.*?)\\end\{matrix\}/g, (match, content) => {
+        let latexFormula = latex;
+
+        // Fix matrix formatting
+        latexFormula = latexFormula.replace(/(\d)\s*&\s*(\d)/g, '$1&$2'); // Remove spaces around &
+        latexFormula = latexFormula.replace(/\\\\\n/g, '\\\\'); // Fix newlines in matrices
+
+        // Fix arrow notation with text
+        latexFormula = latexFormula.replace(/\\xrightarrow\{\\text\s*\{([^}]*)\}\}/g, '\\rightarrow\\above{$1}');
+        latexFormula = latexFormula.replace(/\\xrightarrow\{([^}]*)\}/g, '\\rightarrow\\above{$1}');
+        latexFormula = latexFormula.replace(/\\xleftarrow\{([^}]*)\}/g, '\\leftarrow\\above{$1}');
+
+        // Fix mathematical operators
+        const operators = ['sum', 'csc', 'sec', 'sin', 'cos', 'tan', 'log', 'ln'];
+        operators.forEach(op => {
+            const regex = new RegExp(`\\\\${op}\\s+`, 'g');
+            latexFormula = latexFormula.replace(regex, `\\${op}{`);
+        });
+
+        // Convert matrix to Word format
+        latexFormula = latexFormula.replace(/(\d)\s*\\\\\s*(\d)/g, '$1\\\\$2'); // Remove spaces around \\
+        latexFormula = latexFormula.replace(/\\begin\{matrix\}(.*?)\\end\{matrix\}/gs, (match, content) => {
+            content = content
+                .trim()
+                .replace(/\s+/g, '') // Remove all whitespace
+                .replace(/\\\\/g, '\\\\'); // Ensure proper line breaks
             return `\\matrix{${content}}`;
         });
-        return cleanedLatex;
+
+        // Remove other \begin{} and \end{} environments
+        latexFormula = latexFormula.replace(/\\begin\{[^}]*\}(\{[^}]*\})?\s*/g, '');
+        latexFormula = latexFormula.replace(/\\end\{[^}]*\}\s*/g, '');
+
+        // Add missing closing braces for operators
+        operators.forEach(op => {
+            const regex = new RegExp(`\\\\${op}\\{([^}]*?)(?=[\\s}]|$)`, 'g');
+            latexFormula = latexFormula.replace(regex, `\\${op}{$1}`);
+        });
+
+        // Connect adjacent elements with proper brackets
+        latexFormula = latexFormula.replace(/\}\s+(?=[a-zA-Z\\])/g, '}{');
+
+        // Clean up multiple brackets and spaces
+        latexFormula = latexFormula
+            .replace(/\}\{(?=\})/g, '') // Remove empty bracket pairs
+            .replace(/\{\}(?=\{)/g, '') // Remove empty bracket pairs at start
+            .replace(/\s+/g, ' ') // Normalize spaces
+            .trim();
+
+        return latexFormula;
     }
 
     function updateCodeDisplay(index) {
@@ -246,7 +308,7 @@
         switch (format) {
             case 'latex':
                 code = data.latex_styled || data.data?.find(item => item.type === 'latex')?.value || 'No LaTeX result';
-                code = cleanLatexForWord(code);
+                code = toWordLatex(code);
                 break;
             // case 'asciimath':
             //     code = data.data?.find(item => item.type === 'asciimath')?.value || 'No AsciiMath result';

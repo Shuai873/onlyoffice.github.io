@@ -208,6 +208,77 @@
             align-items: center;
             gap: 5px;
         }
+        /* Add dark theme styles */
+        body.dark-theme {
+            background-color: #2d2d2d;
+            color: #ffffff;
+        }
+
+        .dark-theme .container {
+            background-color: #363636;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .dark-theme h1, .dark-theme h2, .dark-theme h3 {
+            color: #ffffff;
+        }
+
+        .dark-theme #dropZone {
+            border-color: #4a9eff;
+            color: #ffffff;
+        }
+
+        .dark-theme #dropZone:hover, .dark-theme #dropZone.dragover {
+            background-color: #404040;
+        }
+
+        .dark-theme .result-box {
+            background-color: #404040;
+            border-color: #505050;
+        }
+
+        .dark-theme .preview-container {
+            background-color: #363636;
+            border-color: #505050;
+        }
+
+        .dark-theme .codeDisplay {
+            background-color: #2d2d2d;
+            border-color: #505050;
+            color: #ffffff;
+        }
+
+        .dark-theme .codeDisplay:focus {
+            border-color: #4a9eff;
+        }
+
+        .dark-theme #configPanel {
+            background-color: #363636;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .dark-theme #settingsButton {
+            background-color: #404040;
+            color: #ffffff;
+            border-color: #505050;
+        }
+
+        .dark-theme #settingsButton:hover {
+            background-color: #505050;
+        }
+
+        .dark-theme input[type="text"], 
+        .dark-theme select, 
+        .dark-theme textarea {
+            background-color: #2d2d2d;
+            border-color: #505050;
+            color: #ffffff;
+        }
+
+        .dark-theme .error {
+            background-color: #662c2c;
+            color: #ff9999;
+        }
     </style>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
