@@ -51,7 +51,7 @@ Convert mathematical formulas from images to editable text! This plugin allows y
    - Use "Copy" to copy or "Insert" to add to document
 
 #### Important Notes
-- When using LaTeX format, some complex mathematical expressions may need manual adjustment to work with ONLYOFFICE editor
+- **When using LaTeX format, some complex mathematical expressions may need manual adjustment to work with ONLYOFFICE Document Editor**
 - Preview results before insertion to ensure accuracy
 - If recognition results are unsatisfactory, try using clearer images
 

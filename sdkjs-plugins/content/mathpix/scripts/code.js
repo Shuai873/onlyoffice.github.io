@@ -236,7 +236,7 @@
             if (formatSelector.value === 'latex') {
                 const warningDiv = resultBox.querySelector('.latex-warning') || document.createElement('div');
                 warningDiv.className = 'latex-warning';
-                warningDiv.innerHTML = '⚠️' + window.Asc.plugin.tr('Note: Some advanced LaTeX syntax may not be compatible with Word. Manual adjustment might be needed.');
+                warningDiv.innerHTML = '⚠️' + window.Asc.plugin.tr('Note: Some advanced LaTeX syntax may not be compatible with Document Editor. Manual adjustment might be needed.');
                 warningDiv.style.color = '#DDAA00';
                 warningDiv.style.fontSize = '10px';
                 warningDiv.style.marginTop = '5px';

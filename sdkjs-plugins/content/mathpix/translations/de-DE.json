@@ -18,5 +18,5 @@
     "No preview available": "Keine Vorschau verfügbar",
     "Credentials saved!": "Anmeldedaten gespeichert!",
     "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "Bitte geben Sie sowohl Ihre Mathpix App-ID als auch den APP-Schlüssel im Konfigurationsbereich ein.",
-    "Note: Some advanced LaTeX syntax may not be compatible with Word. Manual adjustment might be needed.": "Hinweis: Einige erweiterte LaTeX-Syntaxen sind möglicherweise nicht mit Word kompatibel. Manuelle Anpassungen könnten erforderlich sein."
+    "Note: Some advanced LaTeX syntax may not be compatible with Document Editor. Manual adjustment might be needed.": "Hinweis: Einige erweiterte LaTeX-Syntax ist möglicherweise nicht mit dem Dokumenten-Editor kompatibel. Manuelle Anpassung könnte erforderlich sein."
 } 
