@@ -17,6 +17,7 @@
     "Image": "Imagem",
     "No preview available": "Nenhuma prévia disponível",
     "Credentials saved!": "Credenciais salvas!",
-    "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "Por favor, insira seu ID do aplicativo Mathpix e a chave do aplicativo no painel de configuração.",
-    "Note: Some advanced LaTeX syntax may not be compatible with Document Editor. Manual adjustment might be needed.": "Nota: Algumas sintaxes avançadas do LaTeX podem não ser compatíveis com o Editor de documentos. Pode ser necessário ajuste manual."
+    "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "Por favor, insira seu ID do aplicativo Mathpix e a Chave APP no painel de configuração.",
+    "Note: Some advanced LaTeX syntax may not be compatible with Document Editor. Manual adjustment might be needed.": "Nota: Algumas sintaxes LaTeX avançadas podem não ser compatíveis com o Editor de Documentos. Pode ser necessário ajuste manual.",
+    "Error: LaTeX environments \"\\begin{}\" and \"\\end{}\" are not supported in Document Editor currently. Please modify the equation manually.": "Erro: os ambientes LaTeX \"\\begin{}\" e \"\\end{}\" não são suportados atualmente no Editor de Documentos. Por favor, modifique a equação manualmente."
 } 

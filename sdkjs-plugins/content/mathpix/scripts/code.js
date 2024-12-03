@@ -121,6 +121,7 @@
     }
 
     function handleFiles(files) {
+        clearError();
         currentFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
         imageContainer.innerHTML = '';
         currentFiles.forEach((file, index) => {
@@ -144,6 +145,7 @@
     }
 
     function recognizeFormulas(files) {
+        clearError();
         const appId = appIdInput.value;
         const appKey = appKeyInput.value;
         if (!appId || !appKey) {
@@ -161,7 +163,6 @@
             formData.append('formats', JSON.stringify(["text", "data", "html", "latex_styled"]));
             formData.append('data_options', JSON.stringify({
                 include_latex: true,
-                // include_asciimath: true,
                 include_mathml: true,
             }));
             formData.append('ocr', JSON.stringify(["math", "text"]));
@@ -194,6 +195,28 @@
         });
 
         resultContainer.style.display = 'block';
+    }
+
+    // Check LaTeX environments
+    function checkLatexEnvironments(code, resultBox) {
+        const hasUnsupportedEnvironments = code.match(/\\begin\{[^}]*\}|\\end\{[^}]*\}/);
+        const codeDisplay = resultBox.querySelector('.codeDisplay');
+        const insertBtn = resultBox.querySelector('.insertCodeBtn');
+        
+        if (hasUnsupportedEnvironments) {
+            const errorMsg = window.Asc.plugin.tr('Error: LaTeX environments \"\\begin{}\" and \"\\end{}\" are not supported in Document Editor currently. Please modify the equation manually.');
+            showError(errorMsg);
+            codeDisplay.classList.add('error-highlight');
+            insertBtn.disabled = true;
+            insertBtn.classList.add('disabled');
+            return true;
+        } else {
+            clearError();
+            codeDisplay.classList.remove('error-highlight');
+            insertBtn.disabled = false;
+            insertBtn.classList.remove('disabled');
+            return false;
+        }
     }
 
     function displayResult(data, index) {
@@ -236,10 +259,19 @@
             if (formatSelector.value === 'latex') {
                 const warningDiv = resultBox.querySelector('.latex-warning') || document.createElement('div');
                 warningDiv.className = 'latex-warning';
-                warningDiv.innerHTML = '⚠️' + window.Asc.plugin.tr('Note: Some advanced LaTeX syntax may not be compatible with Document Editor. Manual adjustment might be needed.');
-                warningDiv.style.color = '#DDAA00';
-                warningDiv.style.fontSize = '10px';
-                warningDiv.style.marginTop = '5px';
+                warningDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-size: 14px;">⚠️</span>
+                        <span>${window.Asc.plugin.tr('Note: Some advanced LaTeX syntax may not be compatible with Document Editor. Manual adjustment might be needed.')}</span>
+                    </div>`;
+                warningDiv.style.cssText = `
+                    color: #DDAA00;
+                    font-size: 10px;
+                    margin-top: 6px;
+                    padding: 6px 10px;
+                    background-color: rgba(221, 170, 0, 0.1);
+                    border-radius: 3px;
+                `;
                 
                 const codeDisplay = resultBox.querySelector('.codeDisplay');
                 if (!resultBox.querySelector('.latex-warning')) {
@@ -265,59 +297,38 @@
         if (formatSelector.value === 'latex') {
             formatSelector.dispatchEvent(new Event('change'));
         }
+
+        const codeDisplay = resultBox.querySelector('.codeDisplay');
+        // Add input event listener to check for LaTeX environment changes
+        codeDisplay.addEventListener('input', () => {
+            const code = codeDisplay.innerText;
+            const formatSelector = resultBox.querySelector('.formatSelector');
+            
+            if (formatSelector.value === 'latex') {
+                checkLatexEnvironments(code, resultBox);
+            }
+        });
     }
 
-    function toWordLatex(latex) {
-        // See: https://support.microsoft.com/en-us/office/linear-format-equations-using-unicodemath-and-latex-in-word-2e00618d-b1fd-49d8-8cb4-8d17f25754f8
-        let latexFormula = latex;
-
-        // Fix matrix formatting
-        latexFormula = latexFormula.replace(/(\d)\s*&\s*(\d)/g, '$1&$2'); // Remove spaces around &
-        latexFormula = latexFormula.replace(/\\\\\n/g, '\\\\'); // Fix newlines in matrices
-
-        // Fix arrow notation with text
-        latexFormula = latexFormula.replace(/\\xrightarrow\{\\text\s*\{([^}]*)\}\}/g, '\\rightarrow\\above{$1}');
-        latexFormula = latexFormula.replace(/\\xrightarrow\{([^}]*)\}/g, '\\rightarrow\\above{$1}');
-        latexFormula = latexFormula.replace(/\\xleftarrow\{([^}]*)\}/g, '\\leftarrow\\above{$1}');
-
-        // Fix mathematical operators
-        const operators = ['sum', 'csc', 'sec', 'sin', 'cos', 'tan', 'log', 'ln'];
-        operators.forEach(op => {
-            const regex = new RegExp(`\\\\${op}\\s+`, 'g');
-            latexFormula = latexFormula.replace(regex, `\\${op}{`);
-        });
-
-        // Convert matrix to Word format
-        latexFormula = latexFormula.replace(/(\d)\s*\\\\\s*(\d)/g, '$1\\\\$2'); // Remove spaces around \\
-        latexFormula = latexFormula.replace(/\\begin\{matrix\}(.*?)\\end\{matrix\}/gs, (match, content) => {
-            content = content
-                .trim()
-                .replace(/\s+/g, '') // Remove all whitespace
-                .replace(/\\\\/g, '\\\\'); // Ensure proper line breaks
-            return `\\matrix{${content}}`;
-        });
-
-        // Remove other \begin{} and \end{} environments
-        latexFormula = latexFormula.replace(/\\begin\{[^}]*\}(\{[^}]*\})?\s*/g, '');
-        latexFormula = latexFormula.replace(/\\end\{[^}]*\}\s*/g, '');
-
-        // Add missing closing braces for operators
-        operators.forEach(op => {
-            const regex = new RegExp(`\\\\${op}\\{([^}]*?)(?=[\\s}]|$)`, 'g');
-            latexFormula = latexFormula.replace(regex, `\\${op}{$1}`);
-        });
-
-        // Connect adjacent elements with proper brackets
-        latexFormula = latexFormula.replace(/\}\s+(?=[a-zA-Z\\])/g, '}{');
-
-        // Clean up multiple brackets and spaces
-        latexFormula = latexFormula
-            .replace(/\}\{(?=\})/g, '') // Remove empty bracket pairs
-            .replace(/\{\}(?=\{)/g, '') // Remove empty bracket pairs at start
-            .replace(/\s+/g, ' ') // Normalize spaces
-            .trim();
-
-        return latexFormula;
+    // Per the official request of ONLYOFFICE, perform LaTeX conversion:
+    // better format for latex formula is this:
+    // \\sum{csc}{\\rightarrow\\above{yelds}}\\begin{matrix}1&0&0\\\\0&1&0\\\\0&0&1\\\\\\end{matrix}
+    function convertLatex(code) {
+        // Replace \sum \csc with \sum{csc}
+        code = code.replace(
+            /\\sum\s+\\csc/g,
+            '\\sum{csc}'
+        );
+        
+        // Replace \xrightarrow{\text{yields}} with {\rightarrow\above{yields}}
+        code = code.replace(
+            /\\xrightarrow{\\text\s*{([^}]+)}}/g,
+            '{\\rightarrow\\above{$1}}'
+        );
+        
+        // Add more replacements here as needed
+        
+        return code;
     }
 
     function updateCodeDisplay(index) {
@@ -334,11 +345,8 @@
         switch (format) {
             case 'latex':
                 code = data.latex_styled || data.data?.find(item => item.type === 'latex')?.value || 'No LaTeX result';
-                code = toWordLatex(code);
+                code = convertLatex(code);
                 break;
-            // case 'asciimath':
-            //     code = data.data?.find(item => item.type === 'asciimath')?.value || 'No AsciiMath result';
-            //     break;
             case 'mathml':
                 code = data.data?.find(item => item.type === 'mathml')?.value || 'No MathML result';
                 break;
@@ -363,6 +371,7 @@
     }
 
     function insertCode(index) {
+        clearError();
         const resultBox = resultContainer.children[index + 1];
         const formatSelector = resultBox.querySelector('.formatSelector');
         const codeDisplay = resultBox.querySelector('.codeDisplay');
@@ -370,6 +379,12 @@
         const code = codeDisplay.innerText;
         
         if (format === 'latex') {
+            // Check LaTeX environments
+            if (checkLatexEnvironments(code, resultBox)) {
+                return;
+            }
+            
+            // Proceed with insertion
             Asc.scope.text = code;
             window.Asc.plugin.callCommand(function() {
                 try {
@@ -404,12 +419,14 @@
         errorContainer.classList.add('i18n');
         errorContainer.textContent = window.Asc.plugin.tr(message);
         errorContainer.style.display = 'block';
-        setTimeout(() => {
-            errorContainer.style.display = 'none';
-        }, 5000);
+    }
+
+    function clearError() {
+        errorContainer.style.display = 'none';
     }
 
     function clearAll() {
+        clearError();
         currentFiles = [];
         recognitionResults = [];
         imageContainer.innerHTML = '';
