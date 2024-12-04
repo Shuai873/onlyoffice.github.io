@@ -197,28 +197,6 @@
         resultContainer.style.display = 'block';
     }
 
-    // Check LaTeX environments
-    function checkLatexEnvironments(code, resultBox) {
-        const hasUnsupportedEnvironments = code.match(/\\begin\{[^}]*\}|\\end\{[^}]*\}/);
-        const codeDisplay = resultBox.querySelector('.codeDisplay');
-        const insertBtn = resultBox.querySelector('.insertCodeBtn');
-        
-        if (hasUnsupportedEnvironments) {
-            const errorMsg = window.Asc.plugin.tr('Error: LaTeX environments \"\\begin{}\" and \"\\end{}\" are not supported in Document Editor currently. Please modify the equation manually.');
-            showError(errorMsg);
-            codeDisplay.classList.add('error-highlight');
-            insertBtn.disabled = true;
-            insertBtn.classList.add('disabled');
-            return true;
-        } else {
-            clearError();
-            codeDisplay.classList.remove('error-highlight');
-            insertBtn.disabled = false;
-            insertBtn.classList.remove('disabled');
-            return false;
-        }
-    }
-
     function displayResult(data, index) {
         const resultBox = document.createElement('div');
         resultBox.className = 'result-box';
@@ -297,17 +275,6 @@
         if (formatSelector.value === 'latex') {
             formatSelector.dispatchEvent(new Event('change'));
         }
-
-        const codeDisplay = resultBox.querySelector('.codeDisplay');
-        // Add input event listener to check for LaTeX environment changes
-        codeDisplay.addEventListener('input', () => {
-            const code = codeDisplay.innerText;
-            const formatSelector = resultBox.querySelector('.formatSelector');
-            
-            if (formatSelector.value === 'latex') {
-                checkLatexEnvironments(code, resultBox);
-            }
-        });
     }
 
     // Per the official request of ONLYOFFICE, perform LaTeX conversion:
@@ -379,11 +346,6 @@
         const code = codeDisplay.innerText;
         
         if (format === 'latex') {
-            // Check LaTeX environments
-            if (checkLatexEnvironments(code, resultBox)) {
-                return;
-            }
-            
             // Proceed with insertion
             Asc.scope.text = code;
             window.Asc.plugin.callCommand(function() {
