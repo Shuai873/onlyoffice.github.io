@@ -18,6 +18,5 @@
     "No preview available": "Keine Vorschau verfügbar",
     "Credentials saved!": "Anmeldedaten gespeichert!",
     "Please enter both your Mathpix App ID and APP Key in the configuration panel.": "Bitte geben Sie sowohl Ihre Mathpix App-ID als auch den APP-Schlüssel im Konfigurationsbereich ein.",
-    "Note: Some advanced LaTeX syntax may not be compatible with Document Editor. Manual adjustment might be needed.": "Hinweis: Einige erweiterte LaTeX-Syntax ist möglicherweise nicht mit dem Dokumenten-Editor kompatibel. Manuelle Anpassung könnte erforderlich sein.",
-    "Error: LaTeX environments \"\\begin{}\" and \"\\end{}\" are not supported in Document Editor currently. Please modify the equation manually.": "Fehler: LaTeX-Umgebungen \"\\begin{}\" und \"\\end{}\" werden derzeit im Dokumenten-Editor nicht unterstützt. Bitte ändern Sie die Gleichung manuell."
+    "Note: Some advanced LaTeX syntax may not be compatible with Document Editor. Manual adjustment might be needed.": "Hinweis: Einige erweiterte LaTeX-Syntax ist möglicherweise nicht mit dem Dokumenten-Editor kompatibel. Manuelle Anpassung könnte erforderlich sein."
 } 
